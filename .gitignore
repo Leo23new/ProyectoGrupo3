@@ -1,0 +1,10 @@
+out/
+out_ref/
+referencia_src/
+fuentes.txt
+*.class
+.vscode/
+.idea/
+*.iml
+.DS_Store
+fuentes_ref.txt
