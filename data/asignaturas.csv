@@ -1,0 +1,18 @@
+codigo,nombre,nivel,creditos
+SIS101,programacion i,1,4
+SIS102,Programacion II,2,4
+MAT101,Calculo I,1,5
+FIS101,Fisica I,1,4
+MAT102,Matematica Discreta,2,4
+SIS201,Estructuras de Datos,3,5
+MAT201,Estadistica,3,3
+SIS202,Base de Datos,4,4
+SIS203,Algoritmos,4,4
+SIS101,Programacion I,1,4
+SIS301,Ingenieria de Software I,5,4
+S1,Taller de Lectura,2,3
+SIS302,Redes de Computadores,5,3
+SIS999,,7,3
+SIS303,Inteligencia Artificial,6,4
+SIS777,Robotica,15,3
+SIS888,Seguridad Informatica,4,abc
