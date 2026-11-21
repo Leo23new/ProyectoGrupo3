@@ -35,7 +35,7 @@ public class Main {
     static final String DATOS = "data";
     static final String SALIDA = "output";
 
-    static final Scanner in = new Scanner(System.in);
+    static Scanner in = new Scanner(System.in);
 
     // ---- estado del sistema ----
     static Cola<RegistroCrudo> cola = new Cola<>();
@@ -58,7 +58,12 @@ public class Main {
     /** Historial de opciones usadas (Lista doblemente enlazada). */
     static final ListaDoble<String> historial = new ListaDoble<>();
 
-    public static void main(String[] args) {
+        public static void main(String[] args) {
+        if (args.length > 0 && args[0].equals("--web")) {
+            int puerto = args.length > 1 ? Integer.parseInt(args[1]) : 8080;
+            Servidor.iniciar(puerto);
+            return;
+        }
         boolean demo = args.length > 0 && args[0].equals("--demo");
         if (demo) {
             ejecutarDemo();
@@ -100,7 +105,7 @@ public class Main {
         System.out.println("GRAFOS");
         System.out.println("18. Construir grafo  19. Mostrar conexiones  20. BFS  21. DFS");
         System.out.println("22. Buscar ruta      23. Detectar ciclos");
-        System.out.println("INTELIGENCIA ARTIFICIAL (" + (ia.disponible() ? "API conectada" : "modo local, sin API key") + ")");
+        System.out.println("INTELIGENCIA ARTIFICIAL (" + (ia.disponible() ? "API conectada: " + ia.getProveedor() : "modo local, sin API key") + ")");
         System.out.println("24. Flujograma ETL   25. Flujograma de una estructura");
         System.out.println("26. Flujograma BFS   27. Flujograma DFS");
         System.out.println("28. Explicar árbol   29. Explicar grafo");
