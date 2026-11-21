@@ -88,6 +88,19 @@ En VS Code: abrir la carpeta del proyecto, instalar *Extension Pack for Java* y 
 
 Si se ven signos "?" en lugar de tildes, ejecutar con `-Dstdout.encoding=UTF-8`.
 
+### Interfaz web local (opcional)
+
+```bash
+java -cp out Main --web          # luego abrir http://127.0.0.1:8080
+java -cp out Main --web 8081     # otro puerto si el 8080 está ocupado
+```
+
+Página local (servidor incluido en Java, sin dependencias) con un botón por cada opción del menú. Solo escucha en
+`127.0.0.1`: únicamente se puede abrir desde el mismo computador. Los flujogramas se dibujan con Mermaid (requiere
+internet para cargar la librería; sin internet se muestra el código). Con la IA activa, evitar el botón de DEMO completa:
+hace muchas llamadas seguidas y el nivel gratuito limita las peticiones por minuto; es mejor ejecutar las opciones 24 a 31
+una por una.
+
 ## Dataset de prueba
 
 Contiene casos válidos e inválidos a propósito: identificadores mal formados, campos vacíos, formatos incorrectos,
@@ -105,17 +118,32 @@ valores fuera de rango, duplicados, referencias a estudiantes/asignaturas inexis
 ## Capa de IA
 
 1. El programa **calcula primero** (estadísticas, alturas, ciclos, trazas de BFS/DFS) y arma una descripción estructurada.
-2. Esa descripción se envía a **Claude** (API de Anthropic) para producir el flujograma en Mermaid o la explicación.
+2. Esa descripción se envía a **Google Gemini** (API con nivel gratuito) para producir el flujograma en Mermaid o la
+   explicación. El cliente también admite Claude (Anthropic) como alternativa.
 3. Si no hay API key o la llamada falla, se usa un **generador local** con la misma información y el archivo indica
    su origen (`IA` o `local`). El sistema funciona siempre.
-4. Cada consulta queda registrada (prompt, respuesta y fecha) en `output/evidencias_ia/log_ia.md`.
+4. Cada consulta queda registrada (proveedor, modelo, prompt, respuesta y fecha) en `output/evidencias_ia/log_ia.md`.
+5. Si Gemini responde con límite de peticiones (HTTP 429), el cliente espera y reintenta; además separa las llamadas
+   unos segundos entre sí.
 
-Configurar la IA (opcional):
+Configurar la IA (opcional). La clave **nunca** se escribe en el código ni se sube a GitHub; se define como variable de
+entorno en la terminal donde se ejecuta el programa:
+
+```powershell
+# Windows (PowerShell)
+$env:GEMINI_API_KEY="tu-clave"
+$env:GEMINI_MODEL="gemini-3.8-flash"      # opcional; cambiarlo si el modelo ya no existe
+java -cp out Main
+```
 
 ```bash
-export ANTHROPIC_API_KEY="sk-ant-..."      # Windows CMD: set ANTHROPIC_API_KEY=sk-ant-...
-export CLAUDE_MODEL="claude-sonnet-5-5"    # opcional
+# Linux / macOS
+export GEMINI_API_KEY="tu-clave"
+export GEMINI_MODEL="gemini-3.8-flash"    # opcional
+# Alternativa con Claude:  export ANTHROPIC_API_KEY="..."  (y opcional CLAUDE_MODEL)
 ```
+
+La clave se obtiene gratis en Google AI Studio (`aistudio.google.com/apikey`). Si existen las dos claves, se usa Gemini.
 
 **Privacidad:** solo se envían datos sintéticos y resultados agregados; nunca información personal real.
 
@@ -147,7 +175,7 @@ sobre el dataset (conteos esperados por fuente y por tipo de error).
 | Estructuras (cola, pila, listas, BST, grafo) | _completar_ | _completar_ |
 | ETL (Extract, Transform, Load) | _completar_ | _completar_ |
 | BFS, DFS, búsqueda y ordenamiento | _completar_ | _completar_ |
-| Capa de IA y flujogramas | _completar_ | Flujogramas generados con Claude; prompts en `output/evidencias_ia/` |
+| Capa de IA y flujogramas | _completar_ | Flujogramas, explicaciones y análisis de errores generados con Gemini; prompts y respuestas en `output/evidencias_ia/log_ia.md` |
 | Informe y documentación | _completar_ | _completar_ |
 
 ## Trabajo colaborativo
