@@ -15,11 +15,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Cliente mínimo de la API de Claude (Anthropic Messages API) usando solo java.net.http (Java 11+).
- *
- * Configuración por variables de entorno (la clave NUNCA se escribe en el código ni se sube a GitHub):
- *   ANTHROPIC_API_KEY  -> clave de la API (si no existe, el sistema funciona en modo local/offline)
- *   CLAUDE_MODEL       -> modelo a usar (por defecto claude-sonnet-5-5)
+ * Cliente mínimo de IA generativa usando solo java.net.http (Java 11+).
+ * Proveedores soportados (se elige por la variable de entorno que exista, en este orden):
+ *   1) GEMINI_API_KEY    -> Google Gemini (tiene nivel gratuito). Modelo: GEMINI_MODEL (por defecto gemini-3.8-flash)
+ *   2) ANTHROPIC_API_KEY -> Claude (Anthropic Messages API). Modelo: CLAUDE_MODEL (por defecto claude-sonnet-5-5)
+ *   3) ninguna           -> el sistema funciona en modo local (generador propio, sin IA)
+ * La clave NUNCA se escribe en el código ni se sube a GitHub.
  *
  * Toda consulta (con o sin respuesta) se registra en output/evidencias_ia/log_ia.md:
  * el docente exige conservar los prompts, las respuestas y los ajustes realizados.
@@ -28,17 +29,39 @@ import java.time.format.DateTimeFormatter;
  * No se deben enviar datos personales reales.
  */
 public class ClienteIA {
-    private static final String URL_API = "https://api.anthropic.com/v1/messages";
+    private static final String URL_CLAUDE = "https://api.anthropic.com/v1/messages";
+    private static final String URL_GEMINI = "https://generativelanguage.googleapis.com/v1beta/models/";
     private static final String CARPETA_EVIDENCIA = "output/evidencias_ia";
+    private static final int REINTENTOS = 3;
 
+    private final String proveedor;   // "Gemini", "Claude" o "local"
     private final String apiKey;
     private final String modelo;
     private String ultimoEstado = "";
+    private long ultimaLlamada = 0;   // para espaciar las llamadas y respetar el límite del nivel gratuito
 
     public ClienteIA() {
-        this.apiKey = System.getenv("ANTHROPIC_API_KEY");
-        String m = System.getenv("CLAUDE_MODEL");
-        this.modelo = (m == null || m.isBlank()) ? "claude-sonnet-5-5" : m.trim();
+        String g = System.getenv("GEMINI_API_KEY");
+        String c = System.getenv("ANTHROPIC_API_KEY");
+        if (g != null && !g.isBlank()) {
+            proveedor = "Gemini";
+            apiKey = g.trim();
+            String m = System.getenv("GEMINI_MODEL");
+            modelo = (m == null || m.isBlank()) ? "gemini-3.8-flash" : m.trim();
+        } else if (c != null && !c.isBlank()) {
+            proveedor = "Claude";
+            apiKey = c.trim();
+            String m = System.getenv("CLAUDE_MODEL");
+            modelo = (m == null || m.isBlank()) ? "claude-sonnet-5-5" : m.trim();
+        } else {
+            proveedor = "local";
+            apiKey = null;
+            modelo = "generador local";
+        }
+    }
+
+    public String getProveedor() {
+        return proveedor;
     }
 
     public boolean disponible() {
@@ -60,26 +83,34 @@ public class ClienteIA {
     public String consultar(String titulo, String sistema, String prompt) {
         String respuesta = null;
         if (!disponible()) {
-            ultimoEstado = "Sin ANTHROPIC_API_KEY: se usó el generador local (sin IA)";
+            ultimoEstado = "Sin GEMINI_API_KEY ni ANTHROPIC_API_KEY: se usó el generador local (sin IA)";
         } else {
             try {
-                String cuerpo = "{\"model\":\"" + escaparJson(modelo) + "\","
-                        + "\"max_tokens\":2500,"
-                        + "\"system\":\"" + escaparJson(sistema) + "\","
-                        + "\"messages\":[{\"role\":\"user\",\"content\":\"" + escaparJson(prompt) + "\"}]}";
+                if (proveedor.equals("Gemini")) {
+                long espera = 6000 - (System.currentTimeMillis() - ultimaLlamada);
+                if (espera > 0) {
+                    Thread.sleep(espera);
+                }
+                ultimaLlamada = System.currentTimeMillis();
+                }
                 HttpClient cliente = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).build();
-                HttpRequest peticion = HttpRequest.newBuilder()
-                        .uri(URI.create(URL_API))
-                        .timeout(Duration.ofSeconds(90))
-                        .header("content-type", "application/json")
-                        .header("x-api-key", apiKey)
-                        .header("anthropic-version", "2023-06-01")
-                        .POST(HttpRequest.BodyPublishers.ofString(cuerpo, StandardCharsets.UTF_8))
-                        .build();
-                HttpResponse<String> resp = cliente.send(peticion, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+                HttpRequest peticion = construirPeticion(sistema, prompt);
+                HttpResponse<String> resp = null;
+                for (int intento = 1; intento <= REINTENTOS; intento++) {
+                    resp = cliente.send(peticion, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+                    // 429 = límite de peticiones por minuto (nivel gratuito); 503 = servicio ocupado
+                    if ((resp.statusCode() == 429 || resp.statusCode() == 503) && intento < REINTENTOS) {
+                        System.out.println("  [IA] " + proveedor + " pide esperar (HTTP " + resp.statusCode()
+                                + "); reintento " + intento + "/" + (REINTENTOS - 1) + " en " + (intento * 20) + " s...");
+                        Thread.sleep(intento * 20_000L);
+                        continue;
+                    }
+                    break;
+                }
                 if (resp.statusCode() == 200) {
-                    respuesta = extraerTexto(resp.body());
-                    ultimoEstado = respuesta == null ? "Respuesta de la API sin texto" : "OK (modelo " + modelo + ")";
+                    respuesta = proveedor.equals("Gemini") ? extraerTextoGemini(resp.body()) : extraerTexto(resp.body());
+                    ultimoEstado = respuesta == null ? "Respuesta de la API sin texto"
+                            : "OK (" + proveedor + ", modelo " + modelo + ")";
                 } else {
                     String cuerpoResp = resp.body();
                     if (cuerpoResp.length() > 300) {
@@ -98,6 +129,35 @@ public class ClienteIA {
         return respuesta;
     }
 
+    private HttpRequest construirPeticion(String sistema, String prompt) {
+        HttpRequest.Builder b = HttpRequest.newBuilder().timeout(Duration.ofSeconds(90))
+                .header("content-type", "application/json");
+        if (proveedor.equals("Gemini")) {
+            return b.uri(URI.create(URL_GEMINI + modelo + ":generateContent"))
+                    .header("x-goog-api-key", apiKey)
+                    .POST(HttpRequest.BodyPublishers.ofString(cuerpoGemini(sistema, prompt), StandardCharsets.UTF_8))
+                    .build();
+        }
+        return b.uri(URI.create(URL_CLAUDE))
+                .header("x-api-key", apiKey)
+                .header("anthropic-version", "2023-06-01")
+                .POST(HttpRequest.BodyPublishers.ofString(cuerpoClaude(sistema, prompt), StandardCharsets.UTF_8))
+                .build();
+    }
+
+    String cuerpoClaude(String sistema, String prompt) {
+        return "{\"model\":\"" + escaparJson(modelo) + "\","
+                + "\"max_tokens\":2500,"
+                + "\"system\":\"" + escaparJson(sistema) + "\","
+                + "\"messages\":[{\"role\":\"user\",\"content\":\"" + escaparJson(prompt) + "\"}]}";
+    }
+
+    static String cuerpoGemini(String sistema, String prompt) {
+        return "{\"system_instruction\":{\"parts\":[{\"text\":\"" + escaparJson(sistema) + "\"}]},"
+                + "\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"" + escaparJson(prompt) + "\"}]}],"
+                + "\"generationConfig\":{\"maxOutputTokens\":4096}}";
+    }
+
     private void registrarEvidencia(String titulo, String sistema, String prompt, String respuesta) {
         try {
             Path carpeta = Paths.get(CARPETA_EVIDENCIA);
@@ -106,6 +166,7 @@ public class ClienteIA {
             StringBuilder sb = new StringBuilder();
             sb.append("## ").append(titulo).append("\n");
             sb.append("- Fecha: ").append(fecha).append("\n");
+            sb.append("- Proveedor: ").append(proveedor).append("\n");
             sb.append("- Modelo: ").append(modelo).append("\n");
             sb.append("- Estado: ").append(ultimoEstado).append("\n\n");
             sb.append("**Instrucción de sistema:**\n\n```text\n").append(sistema).append("\n```\n\n");
@@ -116,7 +177,7 @@ public class ClienteIA {
             Files.writeString(carpeta.resolve("log_ia.md"), sb.toString(), StandardCharsets.UTF_8,
                     StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         } catch (IOException e) {
-            System.out.println("  [AVISO] No se pudo guardar la evidencia de IA: " + e.getMessage());
+            System.out.println("  [AVISO] No fse pudo guardar la evidencia de IA: " + e.getMessage());
         }
     }
 
@@ -182,5 +243,31 @@ public class ClienteIA {
             }
         }
         return null;
+    }
+
+    /** Gemini puede devolver el texto en varias partes: se concatenan todas. */
+    static String extraerTextoGemini(String json) {
+        StringBuilder total = new StringBuilder();
+        int pos = json.indexOf("\"parts\"");
+        if (pos < 0) {
+            return null;
+        }
+        while (true) {
+            int k = json.indexOf("\"text\"", pos);
+            if (k < 0) {
+                break;
+            }
+            int comillas = json.indexOf('"', json.indexOf(':', k + 6) + 1);
+            if (comillas < 0) {
+                break;
+            }
+            String parte = extraerTexto("\"text\":\"" + json.substring(comillas + 1));
+            if (parte == null) {
+                break;
+            }
+            total.append(parte);
+            pos = comillas + 1 + parte.length();
+        }
+        return total.length() == 0 ? null : total.toString();
     }
 }
