@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SmartETL-DS + IA · Grupo 3</title>
+<style>
+:root{--ink:#0F1B2D;--ink2:#4A586B;--paper:#F4F1EA;--card:#FBFAF6;--line:#D9D3C1;--teal:#0E7C73;--tealD:#0A5C55;--amber:#B45F06;--bad:#B3261E;--term:#0F1B2D;--termTx:#E6EDF5}
+@media (prefers-color-scheme:dark){:root{--ink:#EAF0F7;--ink2:#A9B6C6;--paper:#0E1726;--card:#16263D;--line:#2A3F5E;--teal:#3CCDBB;--tealD:#2BA899;--amber:#F2A33A;--bad:#FF8A80;--term:#08111F;--termTx:#DCE6F2}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 system-ui,Segoe UI,Roboto,sans-serif}
+header{padding:20px 24px 12px;border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:22px}
+header p{margin:2px 0 0;color:var(--ink2);font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{font-size:13px;padding:3px 12px;border-radius:999px;border:1px solid var(--line);color:var(--ink2);background:var(--card)}
+.chip.ok{border-color:var(--teal);color:var(--teal);font-weight:600}
+main{display:grid;grid-template-columns:340px 1fr;gap:20px;padding:20px 24px;align-items:start}
+@media (max-width:900px){main{grid-template-columns:1fr}}
+.menu{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 16px 16px}
+.menu h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin:16px 0 8px}
+.menu button{display:block;width:100%;text-align:left;margin:0 0 6px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--ink);font:inherit;font-size:15px;cursor:pointer}
+.menu button:hover{border-color:var(--teal);background:rgba(14,124,115,.08)}
+.menu button b{color:var(--teal);display:inline-block;min-width:28px}
+.menu button.demo{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:600}
+.menu button.demo b{color:#fff}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;min-height:300px}
+.panel h2{margin:0 0 4px;font-size:18px}
+form{display:none;margin:12px 0;padding:12px;border:1px dashed var(--teal);border-radius:10px}
+form.on{display:block}
+form label{display:block;font-size:13px;color:var(--ink2);margin:8px 0 2px}
+form input,form select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);font:inherit}
+form .go{margin-top:12px;padding:9px 20px;border:0;border-radius:8px;background:var(--teal);color:#fff;font:inherit;font-weight:600;cursor:pointer}
+pre{margin:12px 0 0;padding:16px;background:var(--term);color:var(--termTx);border-radius:10px;overflow:auto;max-height:62vh;font:13.5px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap}
+.diag{margin-top:12px;padding:12px;background:#fff;border-radius:10px;overflow:auto;text-align:center}
+.diag:empty{display:none}
+.hint{color:var(--ink2);font-size:14px}
+.busy{opacity:.6;pointer-events:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>SmartETL-DS + IA</h1>
+  <p>Grupo 3 · Estructuras de Datos · UTA — ejecución local en este computador</p>
+  <div class="chips" id="chips"></div>
+</header>
+<main>
+  <nav class="menu" id="menu"></nav>
+  <section class="panel" id="panel">
+    <h2 id="titulo">Bienvenido</h2>
+    <p class="hint" id="ayuda">Empiece por <b>1. Extraer datos</b> y siga el orden del menú. Cada botón ejecuta la misma opción del menú de consola.</p>
+    <form id="form"></form>
+    <div class="diag" id="diag"></div>
+    <pre id="salida" hidden></pre>
+  </section>
+</main>
+
+<script>
+const GRUPOS=[
+ ["ETL",[[1,"Extraer datos"],[2,"Mostrar cola de extracción"],[3,"Transformar datos"],[4,"Mostrar registros válidos"],[5,"Mostrar pila de errores"],[6,"Cargar datos"]]],
+ ["Estructuras y algoritmos",[[7,"Mostrar lista enlazada"],[8,"Buscar registro"],[9,"Ordenar registros"]]],
+ ["Árboles (BST)",[[10,"Construir BST"],[11,"Insertar"],[12,"Buscar"],[13,"Eliminar"],[14,"InOrden"],[15,"PreOrden"],[16,"PostOrden"],[17,"Altura y número de nodos"]]],
+ ["Grafos",[[18,"Construir grafo"],[19,"Mostrar conexiones"],[20,"BFS"],[21,"DFS"],[22,"Buscar ruta"],[23,"Detectar ciclos"]]],
+ ["Inteligencia artificial",[[24,"Flujograma ETL"],[25,"Flujograma de una estructura"],[26,"Flujograma BFS"],[27,"Flujograma DFS"],[28,"Explicar árbol"],[29,"Explicar grafo"],[30,"Analizar errores ETL"],[31,"Generar documentación (7 flujogramas)"]]],
+ ["Reportes",[[32,"Generar reporte técnico"],[33,"Exportar resultados"],[35,"Historial de opciones"]]]
+];
+// Datos que pide cada opción: [etiqueta, tipo, valor por defecto, opciones]
+const ENTRADAS={
+ 4:[["Tabla a mostrar","sel","1",[["1","Estudiantes"],["2","Asignaturas"],["3","Matrículas"],["4","Prerrequisitos"]]]],
+ 8:[["Cédula a buscar (10 dígitos)","txt",""],["¿Ver comparativa con muchos registros?","sel","n",[["n","No"],["s","Sí"]]]],
+ 9:[["Criterio","sel","1",[["1","Apellido"],["2","Cédula"],["3","Promedio (mayor a menor)"]]],["Algoritmo","sel","1",[["1","Burbuja"],["2","Inserción"],["3","Selección"]]],["¿Ver comparativa de los 3 algoritmos?","sel","n",[["n","No"],["s","Sí"]]]],
+ 11:[["Cédula (10 dígitos)","txt",""],["Nombres","txt",""],["Apellidos","txt",""],["Edad (16-80)","txt",""],["Carrera","txt",""],["Semestre (1-10)","txt",""],["Promedio (0-10)","txt",""]],
+ 12:[["Cédula a buscar","txt",""]],
+ 13:[["Cédula a eliminar","txt",""]],
+ 19:[["Código para ver prerrequisitos directos (opcional)","txt",""]],
+ 20:[["Código de inicio","txt","SIS101"]],
+ 21:[["Código de inicio","txt","SIS101"]],
+ 22:[["Asignatura origen","txt","SIS101"],["Asignatura destino","txt","SIS303"]],
+ 25:[["Estructura","sel","1",[["1","Cola"],["2","Pila"],["3","Lista enlazada"],["4","BST"]]],["Solo para BST: cédula a buscar (vacío = raíz)","txt",""]]
+};
+const $=id=>document.getElementById(id);
+let actual=null;
+
+function armarMenu(){
+  let h='<button class="demo" onclick="pedir(34,\'DEMO completa automática\')"><b>▶</b> DEMO completa automática</button>';
+  for(const [g,ops] of GRUPOS){
+    h+='<h2>'+g+'</h2>';
+    for(const [n,t] of ops) h+='<button onclick="pedir('+n+',\''+t.replace(/'/g,"\\'")+'\')"><b>'+n+'.</b>'+t+'</button>';
+  }
+  $('menu').innerHTML=h;
+}
+
+async function estado(){
+  try{
+    const e=await (await fetch('/api/estado')).json();
+    const c=(t,ok)=>'<span class="chip'+(ok?' ok':'')+'">'+(ok?'✓ ':'')+t+'</span>';
+    $('chips').innerHTML=c('Extraído',e.extraido)+c('Transformado',e.transformado)+c('BST construido',e.bst)+c('Grafo construido',e.grafo)+
+      '<span class="chip'+(e.ia?' ok':'')+'">IA: '+(e.ia?'API conectada ('+e.proveedor+')':'modo local, sin API key')+'</span>';
+  }catch(_){}
+}
+
+function pedir(n,titulo){
+  actual={n,titulo};
+  const campos=ENTRADAS[n];
+  if(!campos){ejecutar();return;}
+  $('titulo').textContent=n+'. '+titulo;
+  $('ayuda').textContent='Complete los datos y pulse Ejecutar.';
+  $('diag').innerHTML='';$('salida').hidden=true;
+  let h='';
+  campos.forEach((c,i)=>{
+    h+='<label for="f'+i+'">'+c[0]+'</label>';
+    if(c[1]==='sel') h+='<select id="f'+i+'">'+c[3].map(o=>'<option value="'+o[0]+'"'+(o[0]===c[2]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select>';
+    else h+='<input id="f'+i+'" value="'+c[2]+'" autocomplete="off">';
+  });
+  h+='<button type="submit" class="go">Ejecutar</button>';
+  $('form').innerHTML=h;$('form').classList.add('on');
+  const f=document.getElementById('f0');if(f)f.focus();
+}
+$('form').addEventListener('submit',e=>{e.preventDefault();ejecutar();});
+
+async function ejecutar(){
+  const {n,titulo}=actual;
+  const campos=ENTRADAS[n]||[];
+  const cuerpo=campos.map((_,i)=>document.getElementById('f'+i).value).join('\n');
+  $('titulo').textContent=n+'. '+titulo;
+  $('ayuda').textContent='Ejecutando…';
+  $('form').classList.remove('on');
+  $('menu').classList.add('busy');
+  try{
+    const r=await fetch('/api/ejecutar?opcion='+n,{method:'POST',body:cuerpo});
+    mostrar(await r.text());
+    $('ayuda').textContent='Resultado:';
+  }catch(err){
+    mostrar('[ERROR] No se pudo contactar al programa. ¿Sigue abierta la ventana donde lo ejecutó?');
+  }
+  $('menu').classList.remove('busy');
+  estado();
+}
+
+async function mostrar(texto){
+  const lineas=texto.split('\n');
+  let diag=[],resto=[],dentro=false;
+  for(const l of lineas){
+    if(!dentro && /^(flowchart|graph)\s/.test(l)){dentro=true;diag.push(l);continue;}
+    if(dentro){ if(/^\s+\S/.test(l)){diag.push(l);continue;} dentro=false; }
+    resto.push(l);
+  }
+  const s=$('salida');s.hidden=false;
+  s.textContent=resto.join('\n').trim()||'(sin salida)';
+  $('diag').innerHTML='';
+  if(diag.length){
+    try{
+      await cargarMermaid();
+      const {svg}=await mermaid.render('g'+Date.now(),diag.join('\n'));
+      $('diag').innerHTML=svg;
+    }catch(_){
+      s.textContent=texto; // sin internet o error: se muestra el código Mermaid como texto
+    }
+  }
+}
+
+let mermaidListo=null;
+function cargarMermaid(){
+  if(window.mermaid) return Promise.resolve();
+  if(!mermaidListo) mermaidListo=new Promise((ok,mal)=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js';
+    s.onload=()=>{mermaid.initialize({startOnLoad:false,theme:'default'});ok();};
+    s.onerror=()=>{mermaidListo=null;mal();};
+    document.head.appendChild(s);
+  });
+  return mermaidListo;
+}
+
+armarMenu();estado();
+</script>
+</body>
+</html>

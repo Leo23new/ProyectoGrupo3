@@ -1,0 +1,13 @@
+flowchart TD
+    A(["Inicio"]) --> B["Extract: leer 4 archivos CSV"]
+    B --> C["Encolar 109 registros en la Cola"]
+    C --> D{"¿Cola vacía?"}
+    D -->|"No"| E["Desencolar registro"]
+    E --> F["Validar y normalizar"]
+    F --> G{"¿Registro válido?"}
+    G -->|"Sí: 81 registros"| H["Insertar en la Lista enlazada"]
+    G -->|"No: 28 registros"| I["Apilar error en la Pila"]
+    H --> D
+    I --> D
+    D -->|"Sí"| J["Load: escribir CSV limpios, errores y reporte"]
+    J --> K(["Fin"])

@@ -1,0 +1,23 @@
+InOrden (ordenado por cédula):
+1801000001 | Mora Paz Ana Lucia | 19 años | Ingenieria De Software | sem 3 | prom 8.7
+1801000002 | Vega Rojas Carlos Andres | 20 años | Ingenieria De Software | sem 3 | prom 7.9
+1801000003 | Salazar Pico Maria Jose | 21 años | Ingenieria De Software | sem 4 | prom 9.1
+1801000004 | Torres Lema Luis Fernando | 19 años | Ingenieria De Software | sem 2 | prom 6.8
+1801000005 | Cevallos Ruiz Daniela | 22 años | Ingenieria De Software | sem 5 | prom 8.2
+1801000006 | Naranjo Vera Pedro Pablo | 20 años | Ingenieria De Software | sem 3 | prom 7.4
+1801000007 | Herrera Lopez Sofia Camila | 19 años | Ingenieria De Software | sem 2 | prom 9.5
+1801000008 | Paredes Silva Jorge Luis | 23 años | Ingenieria De Software | sem 6 | prom 7.0
+1801000009 | Yanez Mena Karla Estefania | 20 años | Ingenieria De Software | sem 4 | prom 8.8
+1801000010 | Lopez Mera Andres Felipe | 21 años | Ingenieria De Software | sem 4 | prom 7.2
+1801000011 | Guerrero Soto Valeria | 19 años | Ingenieria De Software | sem 2 | prom 9.0
+1801000012 | Bonilla Cruz Miguel Angel | 22 años | Ingenieria De Software | sem 5 | prom 6.5
+1801000013 | Arias Toapanta Camila | 20 años | Ingenieria De Software | sem 3 | prom 8.4
+1801000014 | Sanchez Pazmino Diego Armando | 21 años | Ingenieria De Software | sem 4 | prom 7.6
+1801000015 | Villacis Moya Paola | 19 años | Ingenieria De Software | sem 1 | prom 8.9
+1801000016 | Chiluisa Tigse Jonathan | 23 años | Ingenieria De Software | sem 6 | prom 7.3
+1801000017 | Moreta Bastidas Gabriela | 20 años | Ingenieria De Software | sem 3 | prom 9.3
+1801000018 | Quishpe Llumiquinga Esteban | 22 años | Ingenieria De Software | sem 5 | prom 6.9
+1801000019 | Tapia Amores Fernanda | 19 años | Ingenieria De Software | sem 2 | prom 8.0
+1801000020 | Ortiz Baez Ricardo | 24 años | Ingenieria De Software | sem 7 | prom 7.8
+1801000021 | Castro Aguilar Lorena | 20 años | Ingenieria De Software | sem 3 | prom 8.6
+1801000022 | Ramos Escobar Santiago | 21 años | Ingenieria De Software | sem 4 | prom 7.1

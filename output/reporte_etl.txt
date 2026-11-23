@@ -1,0 +1,19 @@
+REPORTE ETL - SmartETL-DS + IA
+Generado: 2026-11-20 18:19:57
+============================================================
+
+Fuente                 Procesados  Válidos  Inválidos
+estudiantes.csv                34       22         12
+asignaturas.csv                17       12          5
+matriculas.csv                 41       34          7
+prerrequisitos.csv             17       13          4
+TOTAL                         109       81         28
+
+ERRORES POR TIPO
+----------------------------------------
+Identificador incorrecto                           4 (14,3%)
+Datos incompletos                                  5 (17,9%)
+Formato incorrecto                                 5 (17,9%)
+Valor fuera de rango                               5 (17,9%)
+Registro duplicado                                 5 (17,9%)
+Referencia inexistente / relación inconsistente    4 (14,3%)

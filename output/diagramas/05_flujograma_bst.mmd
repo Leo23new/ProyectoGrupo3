@@ -1,0 +1,7 @@
+flowchart TD
+    S(["Inicio: operación en el BST"]) --> R["actual = raíz"]
+    R --> P1{"Comparar: 1801000022 > 1801000007: ir a la derecha"}
+    P1 --> P2{"Comparar: 1801000022 > 1801000009: ir a la derecha"}
+    P2 --> P3{"Comparar: 1801000022 > 1801000018: ir a la derecha"}
+    P3 --> P4["1801000022 = 1801000022: encontrado"]
+    P4 --> Z(["Fin"])

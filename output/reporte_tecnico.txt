@@ -1,0 +1,64 @@
+REPORTE TÉCNICO - SmartETL-DS + IA (Grupo 3)
+==============================================
+
+REPORTE ETL - SmartETL-DS + IA
+Generado: 2026-11-23 11:54:38
+============================================================
+
+Fuente                 Procesados  Válidos  Inválidos
+estudiantes.csv                34       22         12
+asignaturas.csv                17       12          5
+matriculas.csv                 41       34          7
+prerrequisitos.csv             17       13          4
+TOTAL                         109       81         28
+
+ERRORES POR TIPO
+----------------------------------------
+Identificador incorrecto                           4 (14,3%)
+Datos incompletos                                  5 (17,9%)
+Formato incorrecto                                 5 (17,9%)
+Valor fuera de rango                               5 (17,9%)
+Registro duplicado                                 5 (17,9%)
+Referencia inexistente / relación inconsistente    4 (14,3%)
+
+--- BST ---
+Nodos: 22  Hojas: 9  Altura: 8  Altura mínima: 5
+            1801000022
+                    1801000021
+                1801000020
+                    1801000019
+        1801000018
+                    1801000017
+                1801000016
+                    1801000015
+                            1801000014
+                        1801000013
+            1801000012
+                1801000011
+                    1801000010
+    1801000009
+        1801000008
+1801000007
+            1801000006
+        1801000005
+            1801000004
+    1801000003
+            1801000002
+        1801000001
+
+--- Grafo de prerrequisitos ---
+Vértices: 12  Aristas: 13
+SIS101 -> SIS102
+SIS102 -> SIS201, SIS302
+MAT101 -> MAT102, MAT201
+FIS101 -> SIS302
+MAT102 -> SIS201
+SIS201 -> SIS202, SIS203
+MAT201 -> SIS303
+SIS202 -> SIS301
+SIS203 -> SIS303
+SIS301 -> SIS201
+SIS302 -> (ninguno)
+SIS303 -> (ninguno)
+
+SIS201 -> SIS202 -> SIS301 -> SIS201
