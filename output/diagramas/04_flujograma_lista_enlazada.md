@@ -1,9 +1,6 @@
 # Flujograma: Lista enlazada (insertar y buscar)
 
-**Origen:** Generador local (sin IA): Error HTTP 429: {
-  "error": {
-    "code": 429,
-    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceede
+**Origen:** Generador local (estructura fija: la IA se reserva para los flujogramas con datos reales)
 
 ```mermaid
 flowchart TD

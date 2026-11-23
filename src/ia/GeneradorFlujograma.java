@@ -21,10 +21,14 @@ import java.io.IOException;
 public class GeneradorFlujograma {
     private final ClienteIA ia;
     private final String carpeta;
+        private boolean iaEnEstructuras = true;   // false: Cola, Pila y Lista (fijas) se generan localmente, sin llamar a la IA
 
     public GeneradorFlujograma(ClienteIA ia, String carpetaSalida) {
         this.ia = ia;
-        this.carpeta = carpetaSalida + "/diagramas";
+        this.carpeta = carpetaSalida + "/diagramas";    
+    }
+        public void setIAEnEstructuras(boolean valor) {
+        this.iaEnEstructuras = valor;
     }
 
     // ================================================================ API pública
@@ -257,8 +261,10 @@ public class GeneradorFlujograma {
 
     /** Pide el diagrama a la IA; si no es válido usa el local. Guarda el .md y devuelve el Mermaid final. */
     private String producir(String archivo, String titulo, String descripcion, String mermaidLocal) {
-        String respuesta = ia.consultar("Flujograma: " + titulo, GeneradorPrompt.SISTEMA_MERMAID,
-                GeneradorPrompt.flujograma(titulo, descripcion));
+                boolean estructuraFija = archivo.startsWith("02_") || archivo.startsWith("03_") || archivo.startsWith("04_");
+        boolean usarIA = !estructuraFija || iaEnEstructuras;
+        String respuesta = usarIA ? ia.consultar("Flujograma: " + titulo, GeneradorPrompt.SISTEMA_MERMAID,
+                GeneradorPrompt.flujograma(titulo, descripcion)) : null;
         String mermaidIA = extraerMermaid(respuesta);
         String origen;
         String finalMermaid;
@@ -267,7 +273,8 @@ public class GeneradorFlujograma {
             origen = "Generado con IA (" + ia.getModelo() + ") a partir de datos reales de la ejecución";
         } else {
             finalMermaid = mermaidLocal;
-            origen = "Generador local (sin IA): " + ia.getUltimoEstado();
+                        origen = usarIA ? "Generador local (sin IA): " + ia.getUltimoEstado()
+                    : "Generador local (estructura fija: la IA se reserva para los flujogramas con datos reales)";
         }
         String md = "# Flujograma: " + titulo + "\n\n"
                 + "**Origen:** " + origen + "\n\n"

@@ -1,28 +1,20 @@
 # Flujograma: ETL completo
 
-**Origen:** Generador local (sin IA): Error HTTP 503: {
-  "error": {
-    "code": 503,
-    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
-    "status": "UNAVAILABLE"
-  }
-}
-
+**Origen:** Generado con IA (gemini-3.5-flash-lite) a partir de datos reales de la ejecución
 
 ```mermaid
 flowchart TD
-    A(["Inicio"]) --> B["Extract: leer 4 archivos CSV"]
-    B --> C["Encolar 109 registros en la Cola"]
-    C --> D{"¿Cola vacía?"}
-    D -->|"No"| E["Desencolar registro"]
-    E --> F["Validar y normalizar"]
-    F --> G{"¿Registro válido?"}
-    G -->|"Sí: 81 registros"| H["Insertar en la Lista enlazada"]
-    G -->|"No: 28 registros"| I["Apilar error en la Pila"]
-    H --> D
-    I --> D
-    D -->|"Sí"| J["Load: escribir CSV limpios, errores y reporte"]
-    J --> K(["Fin"])
+    A(["Inicio"]) --> B["Extract: leer 4 archivos CSV y encolar 109 registros en Cola FIFO"]
+    B --> C{"Cola vacia?"}
+    C -->|"No"| D["Desencolar registro"]
+    D --> E["Validar identificador campos obligatorios rangos duplicados y referencias"]
+    E --> F{"Es valido?"}
+    F -->|"Si (81 casos)"| G["Insertar en ListaEnlazada"]
+    F -->|"No (28 casos)"| H["Apilar ErrorETL en Pila"]
+    G --> C
+    H --> C
+    C -->|"Si"| I["Load: escribir CSV limpios errores_etl.txt y reporte_etl.txt"]
+    I --> J(["Fin"])
 ```
 
 ## Descripción estructurada enviada a la IA

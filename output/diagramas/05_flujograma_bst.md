@@ -1,18 +1,18 @@
 # Flujograma: BST (comparación de claves)
 
-**Origen:** Generador local (sin IA): Error HTTP 429: {
-  "error": {
-    "code": 429,
-    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceede
+**Origen:** Generado con IA (gemini-3.5-flash-lite) a partir de datos reales de la ejecución
 
 ```mermaid
 flowchart TD
-    S(["Inicio: operación en el BST"]) --> R["actual = raíz"]
-    R --> P1{"Comparar: 1801000022 > 1801000007: ir a la derecha"}
-    P1 --> P2{"Comparar: 1801000022 > 1801000009: ir a la derecha"}
-    P2 --> P3{"Comparar: 1801000022 > 1801000018: ir a la derecha"}
-    P3 --> P4["1801000022 = 1801000022: encontrado"]
-    P4 --> Z(["Fin"])
+    A(["Inicio"]) --> B[""Iniciar busqueda en la raiz""]
+    B --> C{"1801000022 > 1801000007"}
+    C -->|"Verdadero"| D[""Ir a la derecha""]
+    D --> E{"1801000022 > 1801000009"}
+    E -->|"Verdadero"| F[""Ir a la derecha""]
+    F --> G{"1801000022 > 1801000018"}
+    G -->|"Verdadero"| H[""Ir a la derecha""]
+    H --> I{"1801000022 = 1801000022"}
+    I -->|"Verdadero"| J(["Encontrado y Fin"])
 ```
 
 ## Descripción estructurada enviada a la IA

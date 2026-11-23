@@ -608,9 +608,11 @@ public class Main {
         }
         System.out.println("Generando los 7 flujogramas obligatorios...");
         flujogramas.generarETL(eventosETL, transform);
+                flujogramas.setIAEnEstructuras(false);   // Cola, Pila y Lista son fijas: se evita gastar cuota de la IA
         flujogramas.generarCola();
         flujogramas.generarPila();
         flujogramas.generarLista();
+        flujogramas.setIAEnEstructuras(true);
         bst.buscar(Estudiante.sonda(bst.getRaiz().dato.getCedula()));
         String ultimo = bst.inOrden().obtener(bst.contarNodos() - 1).getCedula();
         bst.buscar(Estudiante.sonda(ultimo));

@@ -2306,3 +2306,618 @@ _(sin respuesta de la IA)_
 
 ---
 
+## Flujograma: ETL completo
+- Fecha: 2026-11-23 15:23:22
+- Proveedor: Gemini
+- Modelo: gemini-3.8-flash
+- Estado: Error HTTP 503: {
+  "error": {
+    "code": 503,
+    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
+    "status": "UNAVAILABLE"
+  }
+}
+
+
+**Instrucción de sistema:**
+
+```text
+Eres un asistente que convierte descripciones de algoritmos en diagramas Mermaid. Responde UNICAMENTE con un bloque de codigo mermaid que comience con 'flowchart TD'. Reglas: los ids de nodo son alfanumericos sin espacios; todo el texto de cada nodo va entre comillas dobles; usa ["..."] para procesos, {"..."} para decisiones y (["..."]) para inicio y fin; las etiquetas de flechas se escriben -->|"texto"|; no uses parentesis ni corchetes dentro del texto; no agregues explicaciones fuera del bloque.
+```
+
+**Prompt enviado:**
+
+```text
+Genera un flujograma Mermaid (flowchart TD) del proceso: ETL completo.
+
+Descripcion estructurada generada por el programa (datos reales de la ejecucion):
+Proceso ETL ejecutado con datos reales:
+1. Extract: se leyeron 4 archivos CSV y se encolaron 109 registros en una Cola (FIFO).
+2. Transform: mientras la cola no este vacia se desencola un registro y se valida (identificador, campos obligatorios, rangos, duplicados, referencias).
+3. Si el registro es valido (81 casos) se inserta en una ListaEnlazada; si no (28 casos) se apila un ErrorETL en una Pila.
+4. Load: al vaciarse la cola se escriben los CSV limpios, errores_etl.txt y reporte_etl.txt.
+Errores por tipo: ID_INVALIDO=4 DATO_INCOMPLETO=5 FORMATO_INVALIDO=5 RANGO_INVALIDO=5 DUPLICADO=5 REFERENCIA_INVALIDA=4 
+
+
+El diagrama debe reflejar fielmente estos pasos, con inicio, fin, decisiones y bucles cuando correspondan.
+```
+
+**Respuesta recibida:**
+
+_(sin respuesta de la IA)_
+
+---
+
+## Flujograma: ETL completo
+- Fecha: 2026-11-23 15:24:46
+- Proveedor: Gemini
+- Modelo: gemini-3.8-flash
+- Estado: Error HTTP 503: {
+  "error": {
+    "code": 503,
+    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
+    "status": "UNAVAILABLE"
+  }
+}
+
+
+**Instrucción de sistema:**
+
+```text
+Eres un asistente que convierte descripciones de algoritmos en diagramas Mermaid. Responde UNICAMENTE con un bloque de codigo mermaid que comience con 'flowchart TD'. Reglas: los ids de nodo son alfanumericos sin espacios; todo el texto de cada nodo va entre comillas dobles; usa ["..."] para procesos, {"..."} para decisiones y (["..."]) para inicio y fin; las etiquetas de flechas se escriben -->|"texto"|; no uses parentesis ni corchetes dentro del texto; no agregues explicaciones fuera del bloque.
+```
+
+**Prompt enviado:**
+
+```text
+Genera un flujograma Mermaid (flowchart TD) del proceso: ETL completo.
+
+Descripcion estructurada generada por el programa (datos reales de la ejecucion):
+Proceso ETL ejecutado con datos reales:
+1. Extract: se leyeron 4 archivos CSV y se encolaron 109 registros en una Cola (FIFO).
+2. Transform: mientras la cola no este vacia se desencola un registro y se valida (identificador, campos obligatorios, rangos, duplicados, referencias).
+3. Si el registro es valido (81 casos) se inserta en una ListaEnlazada; si no (28 casos) se apila un ErrorETL en una Pila.
+4. Load: al vaciarse la cola se escriben los CSV limpios, errores_etl.txt y reporte_etl.txt.
+Errores por tipo: ID_INVALIDO=4 DATO_INCOMPLETO=5 FORMATO_INVALIDO=5 RANGO_INVALIDO=5 DUPLICADO=5 REFERENCIA_INVALIDA=4 
+
+
+El diagrama debe reflejar fielmente estos pasos, con inicio, fin, decisiones y bucles cuando correspondan.
+```
+
+**Respuesta recibida:**
+
+_(sin respuesta de la IA)_
+
+---
+
+## Flujograma: BST (comparación de claves)
+- Fecha: 2026-11-23 15:25:47
+- Proveedor: Gemini
+- Modelo: gemini-3.8-flash
+- Estado: Error HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceede
+
+**Instrucción de sistema:**
+
+```text
+Eres un asistente que convierte descripciones de algoritmos en diagramas Mermaid. Responde UNICAMENTE con un bloque de codigo mermaid que comience con 'flowchart TD'. Reglas: los ids de nodo son alfanumericos sin espacios; todo el texto de cada nodo va entre comillas dobles; usa ["..."] para procesos, {"..."} para decisiones y (["..."]) para inicio y fin; las etiquetas de flechas se escriben -->|"texto"|; no uses parentesis ni corchetes dentro del texto; no agregues explicaciones fuera del bloque.
+```
+
+**Prompt enviado:**
+
+```text
+Genera un flujograma Mermaid (flowchart TD) del proceso: BST (comparación de claves).
+
+Descripcion estructurada generada por el programa (datos reales de la ejecucion):
+Operacion real sobre un BST de 22 nodos y altura 8. Cada paso compara la clave con el nodo actual:
+1. 1801000022 > 1801000007: ir a la derecha
+2. 1801000022 > 1801000009: ir a la derecha
+3. 1801000022 > 1801000018: ir a la derecha
+4. 1801000022 = 1801000022: encontrado
+
+
+El diagrama debe reflejar fielmente estos pasos, con inicio, fin, decisiones y bucles cuando correspondan.
+```
+
+**Respuesta recibida:**
+
+_(sin respuesta de la IA)_
+
+---
+
+## Flujograma: Grafo + BFS
+- Fecha: 2026-11-23 15:26:49
+- Proveedor: Gemini
+- Modelo: gemini-3.8-flash
+- Estado: Error HTTP 503: {
+  "error": {
+    "code": 503,
+    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
+    "status": "UNAVAILABLE"
+  }
+}
+
+
+**Instrucción de sistema:**
+
+```text
+Eres un asistente que convierte descripciones de algoritmos en diagramas Mermaid. Responde UNICAMENTE con un bloque de codigo mermaid que comience con 'flowchart TD'. Reglas: los ids de nodo son alfanumericos sin espacios; todo el texto de cada nodo va entre comillas dobles; usa ["..."] para procesos, {"..."} para decisiones y (["..."]) para inicio y fin; las etiquetas de flechas se escriben -->|"texto"|; no uses parentesis ni corchetes dentro del texto; no agregues explicaciones fuera del bloque.
+```
+
+**Prompt enviado:**
+
+```text
+Genera un flujograma Mermaid (flowchart TD) del proceso: Grafo + BFS.
+
+Descripcion estructurada generada por el programa (datos reales de la ejecucion):
+Recorrido BFS real sobre el grafo de prerrequisitos usando una cola. Eventos registrados en orden (con el contenido de la cola tras cada paso):
+INICIO: BFS desde SIS101
+ENCOLAR: SIS101 | cola=[frente: SIS101 :final]
+DESENCOLAR: SIS101 | cola=[frente:  :final]
+ENCOLAR: SIS102 | cola=[frente: SIS102 :final]
+DESENCOLAR: SIS102 | cola=[frente:  :final]
+ENCOLAR: SIS201 | cola=[frente: SIS201 :final]
+ENCOLAR: SIS302 | cola=[frente: SIS201, SIS302 :final]
+DESENCOLAR: SIS201 | cola=[frente: SIS302 :final]
+ENCOLAR: SIS202 | cola=[frente: SIS302, SIS202 :final]
+ENCOLAR: SIS203 | cola=[frente: SIS302, SIS202, SIS203 :final]
+DESENCOLAR: SIS302 | cola=[frente: SIS202, SIS203 :final]
+DESENCOLAR: SIS202 | cola=[frente: SIS203 :final]
+ENCOLAR: SIS301 | cola=[frente: SIS203, SIS301 :final]
+DESENCOLAR: SIS203 | cola=[frente: SIS301 :final]
+ENCOLAR: SIS303 | cola=[frente: SIS301, SIS303 :final]
+DESENCOLAR: SIS301 | cola=[frente: SIS303 :final]
+DESENCOLAR: SIS303 | cola=[frente:  :final]
+FIN: cola vacía; vértices visitados: 8
+
+
+El diagrama debe reflejar fielmente estos pasos, con inicio, fin, decisiones y bucles cuando correspondan.
+```
+
+**Respuesta recibida:**
+
+_(sin respuesta de la IA)_
+
+---
+
+## Flujograma: Grafo + DFS
+- Fecha: 2026-11-23 15:27:50
+- Proveedor: Gemini
+- Modelo: gemini-3.8-flash
+- Estado: Error HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceede
+
+**Instrucción de sistema:**
+
+```text
+Eres un asistente que convierte descripciones de algoritmos en diagramas Mermaid. Responde UNICAMENTE con un bloque de codigo mermaid que comience con 'flowchart TD'. Reglas: los ids de nodo son alfanumericos sin espacios; todo el texto de cada nodo va entre comillas dobles; usa ["..."] para procesos, {"..."} para decisiones y (["..."]) para inicio y fin; las etiquetas de flechas se escriben -->|"texto"|; no uses parentesis ni corchetes dentro del texto; no agregues explicaciones fuera del bloque.
+```
+
+**Prompt enviado:**
+
+```text
+Genera un flujograma Mermaid (flowchart TD) del proceso: Grafo + DFS.
+
+Descripcion estructurada generada por el programa (datos reales de la ejecucion):
+Recorrido DFS real sobre el grafo de prerrequisitos usando una pila. Eventos registrados en orden (con el contenido de la pila tras cada paso):
+INICIO: DFS desde SIS101
+APILAR: SIS101 | pila=[cima: SIS101]
+VISITAR: SIS101 | pila=[cima: ]
+APILAR: SIS102 | pila=[cima: SIS102]
+VISITAR: SIS102 | pila=[cima: ]
+APILAR: SIS302 | pila=[cima: SIS302]
+APILAR: SIS201 | pila=[cima: SIS201 | SIS302]
+VISITAR: SIS201 | pila=[cima: SIS302]
+APILAR: SIS203 | pila=[cima: SIS203 | SIS302]
+APILAR: SIS202 | pila=[cima: SIS202 | SIS203 | SIS302]
+VISITAR: SIS202 | pila=[cima: SIS203 | SIS302]
+APILAR: SIS301 | pila=[cima: SIS301 | SIS203 | SIS302]
+VISITAR: SIS301 | pila=[cima: SIS203 | SIS302]
+VISITAR: SIS203 | pila=[cima: SIS302]
+APILAR: SIS303 | pila=[cima: SIS303 | SIS302]
+VISITAR: SIS303 | pila=[cima: SIS302]
+VISITAR: SIS302 | pila=[cima: ]
+FIN: pila vacía; vértices visitados: 8
+
+
+El diagrama debe reflejar fielmente estos pasos, con inicio, fin, decisiones y bucles cuando correspondan.
+```
+
+**Respuesta recibida:**
+
+_(sin respuesta de la IA)_
+
+---
+
+## Documentación del sistema
+- Fecha: 2026-11-23 15:28:51
+- Proveedor: Gemini
+- Modelo: gemini-3.8-flash
+- Estado: Error HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceede
+
+**Instrucción de sistema:**
+
+```text
+Eres un profesor de Estructuras de Datos de ingenieria de software. Explica en espanol, con tono tecnico pero claro, refiriendote a los nodos, claves y valores CONCRETOS que recibes, no a definiciones genericas. Maximo 250 palabras. No inventes datos que no esten en la entrada.
+```
+
+**Prompt enviado:**
+
+```text
+Redacta en espanol la documentacion tecnica breve (formato Markdown, maximo 400 palabras) del siguiente sistema, con las secciones: Proposito, Flujo de datos, Estructuras utilizadas y por que, Resultados de la ejecucion.
+
+Registros procesados: 109 | válidos: 81 | inválidos: 28
+Estudiantes válidos: 22 | Asignaturas: 12 | Matrículas: 34 | Prerrequisitos: 13
+BST: 22 nodos, altura 8
+Grafo: 12 vértices, 13 aristas
+SIS201 -> SIS202 -> SIS301 -> SIS201
+Total de registros procesados: 109
+Registros válidos: 81
+Total de errores: 28
+Identificador incorrecto: 4
+Datos incompletos: 5
+Formato incorrecto: 5
+Valor fuera de rango: 5
+Registro duplicado: 5
+Referencia inexistente / relación inconsistente: 4
+Errores en estudiantes.csv: 12 de 34
+Errores en asignaturas.csv: 5 de 17
+Errores en matriculas.csv: 7 de 41
+Errores en prerrequisitos.csv: 4 de 17
+
+```
+
+**Respuesta recibida:**
+
+_(sin respuesta de la IA)_
+
+---
+
+## Flujograma: ETL completo
+- Fecha: 2026-11-23 15:31:44
+- Proveedor: Gemini
+- Modelo: gemini-3.5-flash-lite
+- Estado: OK (Gemini, modelo gemini-3.5-flash-lite)
+
+**Instrucción de sistema:**
+
+```text
+Eres un asistente que convierte descripciones de algoritmos en diagramas Mermaid. Responde UNICAMENTE con un bloque de codigo mermaid que comience con 'flowchart TD'. Reglas: los ids de nodo son alfanumericos sin espacios; todo el texto de cada nodo va entre comillas dobles; usa ["..."] para procesos, {"..."} para decisiones y (["..."]) para inicio y fin; las etiquetas de flechas se escriben -->|"texto"|; no uses parentesis ni corchetes dentro del texto; no agregues explicaciones fuera del bloque.
+```
+
+**Prompt enviado:**
+
+```text
+Genera un flujograma Mermaid (flowchart TD) del proceso: ETL completo.
+
+Descripcion estructurada generada por el programa (datos reales de la ejecucion):
+Proceso ETL ejecutado con datos reales:
+1. Extract: se leyeron 4 archivos CSV y se encolaron 109 registros en una Cola (FIFO).
+2. Transform: mientras la cola no este vacia se desencola un registro y se valida (identificador, campos obligatorios, rangos, duplicados, referencias).
+3. Si el registro es valido (81 casos) se inserta en una ListaEnlazada; si no (28 casos) se apila un ErrorETL en una Pila.
+4. Load: al vaciarse la cola se escriben los CSV limpios, errores_etl.txt y reporte_etl.txt.
+Errores por tipo: ID_INVALIDO=4 DATO_INCOMPLETO=5 FORMATO_INVALIDO=5 RANGO_INVALIDO=5 DUPLICADO=5 REFERENCIA_INVALIDA=4 
+
+
+El diagrama debe reflejar fielmente estos pasos, con inicio, fin, decisiones y bucles cuando correspondan.
+```
+
+**Respuesta recibida:**
+
+````text
+```mermaid
+flowchart TD
+    A(["Inicio"]) --> B["Extract: leer 4 archivos CSV y encolar 109 registros en Cola FIFO"]
+    B --> C{"Cola vacia?"}
+    C -->|"No"| D["Desencolar un registro y validar campos"]
+    D --> E{"Registro valido?"}
+    E -->|"Si 81 casos"| F["Insertar en ListaEnlazada"]
+    E -->|"No 28 casos"| G["Apilar ErrorETL en Pila"]
+    F --> C
+    G --> C
+    C -->|"Si"| H["Load: escribir CSV limpios errores_etl.txt y reporte_etl.txt"]
+    H --> I(["Fin"])
+```
+````
+
+---
+
+## Flujograma: ETL completo
+- Fecha: 2026-11-23 15:31:51
+- Proveedor: Gemini
+- Modelo: gemini-3.5-flash-lite
+- Estado: OK (Gemini, modelo gemini-3.5-flash-lite)
+
+**Instrucción de sistema:**
+
+```text
+Eres un asistente que convierte descripciones de algoritmos en diagramas Mermaid. Responde UNICAMENTE con un bloque de codigo mermaid que comience con 'flowchart TD'. Reglas: los ids de nodo son alfanumericos sin espacios; todo el texto de cada nodo va entre comillas dobles; usa ["..."] para procesos, {"..."} para decisiones y (["..."]) para inicio y fin; las etiquetas de flechas se escriben -->|"texto"|; no uses parentesis ni corchetes dentro del texto; no agregues explicaciones fuera del bloque.
+```
+
+**Prompt enviado:**
+
+```text
+Genera un flujograma Mermaid (flowchart TD) del proceso: ETL completo.
+
+Descripcion estructurada generada por el programa (datos reales de la ejecucion):
+Proceso ETL ejecutado con datos reales:
+1. Extract: se leyeron 4 archivos CSV y se encolaron 109 registros en una Cola (FIFO).
+2. Transform: mientras la cola no este vacia se desencola un registro y se valida (identificador, campos obligatorios, rangos, duplicados, referencias).
+3. Si el registro es valido (81 casos) se inserta en una ListaEnlazada; si no (28 casos) se apila un ErrorETL en una Pila.
+4. Load: al vaciarse la cola se escriben los CSV limpios, errores_etl.txt y reporte_etl.txt.
+Errores por tipo: ID_INVALIDO=4 DATO_INCOMPLETO=5 FORMATO_INVALIDO=5 RANGO_INVALIDO=5 DUPLICADO=5 REFERENCIA_INVALIDA=4 
+
+
+El diagrama debe reflejar fielmente estos pasos, con inicio, fin, decisiones y bucles cuando correspondan.
+```
+
+**Respuesta recibida:**
+
+````text
+```mermaid
+flowchart TD
+    A(["Inicio"]) --> B["Extract: leer 4 archivos CSV y encolar 109 registros en Cola FIFO"]
+    B --> C{"Cola vacia?"}
+    C -->|"No"| D["Desencolar registro"]
+    D --> E["Validar identificador campos obligatorios rangos duplicados y referencias"]
+    E --> F{"Es valido?"}
+    F -->|"Si (81 casos)"| G["Insertar en ListaEnlazada"]
+    F -->|"No (28 casos)"| H["Apilar ErrorETL en Pila"]
+    G --> C
+    H --> C
+    C -->|"Si"| I["Load: escribir CSV limpios errores_etl.txt y reporte_etl.txt"]
+    I --> J(["Fin"])
+```
+````
+
+---
+
+## Flujograma: BST (comparación de claves)
+- Fecha: 2026-11-23 15:31:57
+- Proveedor: Gemini
+- Modelo: gemini-3.5-flash-lite
+- Estado: OK (Gemini, modelo gemini-3.5-flash-lite)
+
+**Instrucción de sistema:**
+
+```text
+Eres un asistente que convierte descripciones de algoritmos en diagramas Mermaid. Responde UNICAMENTE con un bloque de codigo mermaid que comience con 'flowchart TD'. Reglas: los ids de nodo son alfanumericos sin espacios; todo el texto de cada nodo va entre comillas dobles; usa ["..."] para procesos, {"..."} para decisiones y (["..."]) para inicio y fin; las etiquetas de flechas se escriben -->|"texto"|; no uses parentesis ni corchetes dentro del texto; no agregues explicaciones fuera del bloque.
+```
+
+**Prompt enviado:**
+
+```text
+Genera un flujograma Mermaid (flowchart TD) del proceso: BST (comparación de claves).
+
+Descripcion estructurada generada por el programa (datos reales de la ejecucion):
+Operacion real sobre un BST de 22 nodos y altura 8. Cada paso compara la clave con el nodo actual:
+1. 1801000022 > 1801000007: ir a la derecha
+2. 1801000022 > 1801000009: ir a la derecha
+3. 1801000022 > 1801000018: ir a la derecha
+4. 1801000022 = 1801000022: encontrado
+
+
+El diagrama debe reflejar fielmente estos pasos, con inicio, fin, decisiones y bucles cuando correspondan.
+```
+
+**Respuesta recibida:**
+
+````text
+```mermaid
+flowchart TD
+    A(["Inicio"]) --> B[""Iniciar busqueda en la raiz""]
+    B --> C{"1801000022 > 1801000007"}
+    C -->|"Verdadero"| D[""Ir a la derecha""]
+    D --> E{"1801000022 > 1801000009"}
+    E -->|"Verdadero"| F[""Ir a la derecha""]
+    F --> G{"1801000022 > 1801000018"}
+    G -->|"Verdadero"| H[""Ir a la derecha""]
+    H --> I{"1801000022 = 1801000022"}
+    I -->|"Verdadero"| J(["Encontrado y Fin"])
+```
+````
+
+---
+
+## Flujograma: Grafo + BFS
+- Fecha: 2026-11-23 15:32:03
+- Proveedor: Gemini
+- Modelo: gemini-3.5-flash-lite
+- Estado: OK (Gemini, modelo gemini-3.5-flash-lite)
+
+**Instrucción de sistema:**
+
+```text
+Eres un asistente que convierte descripciones de algoritmos en diagramas Mermaid. Responde UNICAMENTE con un bloque de codigo mermaid que comience con 'flowchart TD'. Reglas: los ids de nodo son alfanumericos sin espacios; todo el texto de cada nodo va entre comillas dobles; usa ["..."] para procesos, {"..."} para decisiones y (["..."]) para inicio y fin; las etiquetas de flechas se escriben -->|"texto"|; no uses parentesis ni corchetes dentro del texto; no agregues explicaciones fuera del bloque.
+```
+
+**Prompt enviado:**
+
+```text
+Genera un flujograma Mermaid (flowchart TD) del proceso: Grafo + BFS.
+
+Descripcion estructurada generada por el programa (datos reales de la ejecucion):
+Recorrido BFS real sobre el grafo de prerrequisitos usando una cola. Eventos registrados en orden (con el contenido de la cola tras cada paso):
+INICIO: BFS desde SIS101
+ENCOLAR: SIS101 | cola=[frente: SIS101 :final]
+DESENCOLAR: SIS101 | cola=[frente:  :final]
+ENCOLAR: SIS102 | cola=[frente: SIS102 :final]
+DESENCOLAR: SIS102 | cola=[frente:  :final]
+ENCOLAR: SIS201 | cola=[frente: SIS201 :final]
+ENCOLAR: SIS302 | cola=[frente: SIS201, SIS302 :final]
+DESENCOLAR: SIS201 | cola=[frente: SIS302 :final]
+ENCOLAR: SIS202 | cola=[frente: SIS302, SIS202 :final]
+ENCOLAR: SIS203 | cola=[frente: SIS302, SIS202, SIS203 :final]
+DESENCOLAR: SIS302 | cola=[frente: SIS202, SIS203 :final]
+DESENCOLAR: SIS202 | cola=[frente: SIS203 :final]
+ENCOLAR: SIS301 | cola=[frente: SIS203, SIS301 :final]
+DESENCOLAR: SIS203 | cola=[frente: SIS301 :final]
+ENCOLAR: SIS303 | cola=[frente: SIS301, SIS303 :final]
+DESENCOLAR: SIS301 | cola=[frente: SIS303 :final]
+DESENCOLAR: SIS303 | cola=[frente:  :final]
+FIN: cola vacía; vértices visitados: 8
+
+
+El diagrama debe reflejar fielmente estos pasos, con inicio, fin, decisiones y bucles cuando correspondan.
+```
+
+**Respuesta recibida:**
+
+````text
+```mermaid
+flowchart TD
+    Inicio(["INICIO: BFS desde SIS101"]) --> E1["ENCOLAR: SIS101"]
+    E1 --> D1["DESENCOLAR: SIS101"]
+    D1 --> E2["ENCOLAR: SIS102"]
+    E2 --> D2["DESENCOLAR: SIS102"]
+    D2 --> E3["ENCOLAR: SIS201"]
+    E3 --> E4["ENCOLAR: SIS302"]
+    E4 --> D3["DESENCOLAR: SIS201"]
+    D3 --> E5["ENCOLAR: SIS202"]
+    E5 --> E6["ENCOLAR: SIS203"]
+    E6 --> D4["DESENCOLAR: SIS302"]
+    D4 --> D5["DESENCOLAR: SIS202"]
+    D5 --> E7["ENCOLAR: SIS301"]
+    E7 --> D6["DESENCOLAR: SIS203"]
+    D6 --> E8["ENCOLAR: SIS303"]
+    E8 --> D7["DESENCOLAR: SIS301"]
+    D7 --> D8["DESENCOLAR: SIS303"]
+    D8 --> Fin(["FIN: cola vacia vertices visitados 8"])
+```
+````
+
+---
+
+## Flujograma: Grafo + DFS
+- Fecha: 2026-11-23 15:32:09
+- Proveedor: Gemini
+- Modelo: gemini-3.5-flash-lite
+- Estado: OK (Gemini, modelo gemini-3.5-flash-lite)
+
+**Instrucción de sistema:**
+
+```text
+Eres un asistente que convierte descripciones de algoritmos en diagramas Mermaid. Responde UNICAMENTE con un bloque de codigo mermaid que comience con 'flowchart TD'. Reglas: los ids de nodo son alfanumericos sin espacios; todo el texto de cada nodo va entre comillas dobles; usa ["..."] para procesos, {"..."} para decisiones y (["..."]) para inicio y fin; las etiquetas de flechas se escriben -->|"texto"|; no uses parentesis ni corchetes dentro del texto; no agregues explicaciones fuera del bloque.
+```
+
+**Prompt enviado:**
+
+```text
+Genera un flujograma Mermaid (flowchart TD) del proceso: Grafo + DFS.
+
+Descripcion estructurada generada por el programa (datos reales de la ejecucion):
+Recorrido DFS real sobre el grafo de prerrequisitos usando una pila. Eventos registrados en orden (con el contenido de la pila tras cada paso):
+INICIO: DFS desde SIS101
+APILAR: SIS101 | pila=[cima: SIS101]
+VISITAR: SIS101 | pila=[cima: ]
+APILAR: SIS102 | pila=[cima: SIS102]
+VISITAR: SIS102 | pila=[cima: ]
+APILAR: SIS302 | pila=[cima: SIS302]
+APILAR: SIS201 | pila=[cima: SIS201 | SIS302]
+VISITAR: SIS201 | pila=[cima: SIS302]
+APILAR: SIS203 | pila=[cima: SIS203 | SIS302]
+APILAR: SIS202 | pila=[cima: SIS202 | SIS203 | SIS302]
+VISITAR: SIS202 | pila=[cima: SIS203 | SIS302]
+APILAR: SIS301 | pila=[cima: SIS301 | SIS203 | SIS302]
+VISITAR: SIS301 | pila=[cima: SIS203 | SIS302]
+VISITAR: SIS203 | pila=[cima: SIS302]
+APILAR: SIS303 | pila=[cima: SIS303 | SIS302]
+VISITAR: SIS303 | pila=[cima: SIS302]
+VISITAR: SIS302 | pila=[cima: ]
+FIN: pila vacía; vértices visitados: 8
+
+
+El diagrama debe reflejar fielmente estos pasos, con inicio, fin, decisiones y bucles cuando correspondan.
+```
+
+**Respuesta recibida:**
+
+````text
+```mermaid
+flowchart TD
+    Inicio(["INICIO: DFS desde SIS101"]) --> Apilar1["APILAR: SIS101"]
+    Apilar1 --> Visitar1["VISITAR: SIS101"]
+    Visitar1 --> Apilar2["APILAR: SIS102"]
+    Apilar2 --> Visitar2["VISITAR: SIS102"]
+    Visitar2 --> Apilar3["APILAR: SIS302"]
+    Apilar3 --> Apilar4["APILAR: SIS201"]
+    Apilar4 --> Visitar4["VISITAR: SIS201"]
+    Visitar4 --> Apilar5["APILAR: SIS203"]
+    Apilar5 --> Apilar6["APILAR: SIS202"]
+    Apilar6 --> Visitar6["VISITAR: SIS202"]
+    Visitar6 --> Apilar7["APILAR: SIS301"]
+    Apilar7 --> Visitar7["VISITAR: SIS301"]
+    Visitar7 --> Visitar5["VISITAR: SIS203"]
+    Visitar5 --> Apilar8["APILAR: SIS303"]
+    Apilar8 --> Visitar8["VISITAR: SIS303"]
+    Visitar8 --> Visitar3["VISITAR: SIS302"]
+    Visitar3 --> Fin(["FIN: pila vacia; vertices visitados: 8"])
+```
+````
+
+---
+
+## Documentación del sistema
+- Fecha: 2026-11-23 15:32:15
+- Proveedor: Gemini
+- Modelo: gemini-3.5-flash-lite
+- Estado: OK (Gemini, modelo gemini-3.5-flash-lite)
+
+**Instrucción de sistema:**
+
+```text
+Eres un profesor de Estructuras de Datos de ingenieria de software. Explica en espanol, con tono tecnico pero claro, refiriendote a los nodos, claves y valores CONCRETOS que recibes, no a definiciones genericas. Maximo 250 palabras. No inventes datos que no esten en la entrada.
+```
+
+**Prompt enviado:**
+
+```text
+Redacta en espanol la documentacion tecnica breve (formato Markdown, maximo 400 palabras) del siguiente sistema, con las secciones: Proposito, Flujo de datos, Estructuras utilizadas y por que, Resultados de la ejecucion.
+
+Registros procesados: 109 | válidos: 81 | inválidos: 28
+Estudiantes válidos: 22 | Asignaturas: 12 | Matrículas: 34 | Prerrequisitos: 13
+BST: 22 nodos, altura 8
+Grafo: 12 vértices, 13 aristas
+SIS201 -> SIS202 -> SIS301 -> SIS201
+Total de registros procesados: 109
+Registros válidos: 81
+Total de errores: 28
+Identificador incorrecto: 4
+Datos incompletos: 5
+Formato incorrecto: 5
+Valor fuera de rango: 5
+Registro duplicado: 5
+Referencia inexistente / relación inconsistente: 4
+Errores en estudiantes.csv: 12 de 34
+Errores en asignaturas.csv: 5 de 17
+Errores en matriculas.csv: 7 de 41
+Errores en prerrequisitos.csv: 4 de 17
+
+```
+
+**Respuesta recibida:**
+
+````text
+### Propósito
+Documentar el procesamiento de 109 registros del sistema académico (81 válidos, 28 errores), validando entidades y dependencias curriculares.
+
+### Flujo de datos
+Se ingieren 109 registros totales. Tras la validación, se descartaron 28 errores (4 identificadores incorrectos, 5 incompletos, 5 de formato, 5 fuera de rango, 5 duplicados y 4 referencias inconsistentes), distribuidos en `estudiantes.csv` (12), `asignaturas.csv` (5), `matriculas.csv` (7) y `prerrequisitos.csv` (4). Los 81 registros válidos alimentan las estructuras de datos.
+
+### Estructuras utilizadas y por qué
+*   **BST (Árbol Binario de Búsqueda):** Contiene exactamente 22 nodos (altura 8) para almacenar los 22 estudiantes válidos. Se usa por su eficiencia $O(\log n)$ en búsquedas de claves individuales.
+*   **Grafo:** Modela las 12 asignaturas como vértices y los 13 prerrequisitos como aristas dirigidas. Permite analizar dependencias. Se detectó el ciclo concreto: `SIS201 -> SIS202 -> SIS301 -> SIS201`.
+
+### Resultados de la ejecución
+Se procesaron 109 registros (81 válidos, 28 errores). Se estructuraron 22 nodos en el BST y 12 vértices con 13 aristas en el grafo. El análisis detectó una anomalía crítica en el grafo: un ciclo de prerrequisitos (`SIS201 -> SIS202 -> SIS301 -> SIS201`), lo que impide una ordenación topológica válida para las 12 asignaturas y 34 matrículas.
+````
+
+---
+
