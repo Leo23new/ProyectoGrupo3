@@ -1,13 +1,6 @@
 # Análisis de errores del ETL
 
-**Origen:** Análisis local (sin IA): Error HTTP 503: {
-  "error": {
-    "code": 503,
-    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
-    "status": "UNAVAILABLE"
-  }
-}
-
+**Origen:** Análisis local (sin IA): Sin GEMINI_API_KEY ni ANTHROPIC_API_KEY: se usó el generador local (sin IA)
 
 Datos agregados usados:
 

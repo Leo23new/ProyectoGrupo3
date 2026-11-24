@@ -96,7 +96,21 @@ java -cp out Main --web 8081     # otro puerto si el 8080 está ocupado
 ```
 
 Página local (servidor incluido en Java, sin dependencias) con un botón por cada opción del menú. Solo escucha en
-`127.0.0.1`: únicamente se puede abrir desde el mismo computador. Los flujogramas se dibujan con Mermaid (requiere
+`127.0.0.1`: únicamente se puede abrir desde el mismo computador. En **Modo guiado**, complete la extracción,
+la transformación y la construcción del grafo. Abra **37. Visualizar grafo** para seleccionar una asignatura,
+ver sus conexiones y avanzar o retroceder por los pasos de BFS o DFS dentro de la misma página.
+El grafo funciona sin internet. Con `GEMINI_API_KEY` configurada en la terminal que inicia Java, use
+**Explicar con Gemini** para solicitar una explicación de la traza del recorrido.
+
+La opción **31. Chat guiado y documentación** permite elegir y ejecutar las etapas de extracción,
+transformación, carga, BST, grafo, BFS y DFS. Puedes pedir una recomendación en el chat en cualquier etapa,
+elegir la dirección del grafo y los orígenes de los recorridos, o dejar etapas pendientes para el cierre.
+En **Documentación → Generar documentación**, el sistema completa lo pendiente y muestra el grafo interactivo,
+los recorridos elegidos, los siete flujogramas, el árbol BST y los reportes dentro de la página.
+La vista visual funciona sin internet. Con la clave configurada, Gemini responde en el chat y puede redactar el texto final.
+Los archivos de documentación y los diagramas también se guardan en `output/`.
+
+Los flujogramas de las opciones de IA se dibujan con Mermaid (requiere
 internet para cargar la librería; sin internet se muestra el código). Con la IA activa, evitar el botón de DEMO completa:
 hace muchas llamadas seguidas y el nivel gratuito limita las peticiones por minuto; es mejor ejecutar las opciones 24 a 31
 una por una.
@@ -132,14 +146,13 @@ entorno en la terminal donde se ejecuta el programa:
 ```powershell
 # Windows (PowerShell)
 $env:GEMINI_API_KEY="tu-clave"
-$env:GEMINI_MODEL="gemini-3.8-flash"      # opcional; cambiarlo si el modelo ya no existe
-java -cp out Main
+java -cp out Main --web                 # use Main sin --web para el menú de consola
 ```
 
 ```bash
 # Linux / macOS
 export GEMINI_API_KEY="tu-clave"
-export GEMINI_MODEL="gemini-3.8-flash"    # opcional
+java -cp out Main --web
 # Alternativa con Claude:  export ANTHROPIC_API_KEY="..."  (y opcional CLAUDE_MODEL)
 ```
 

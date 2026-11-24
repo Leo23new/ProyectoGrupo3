@@ -2,7 +2,7 @@ REPORTE TÉCNICO - SmartETL-DS + IA (Grupo 3)
 ==============================================
 
 REPORTE ETL - SmartETL-DS + IA
-Generado: 2026-11-23 11:54:38
+Generado: 2026-11-24 12:56:12
 ============================================================
 
 Fuente                 Procesados  Válidos  Inválidos

@@ -22,6 +22,16 @@ import model.Estudiante;
 import model.Matricula;
 import model.Prerrequisito;
 import model.RegistroCrudo;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+import java.awt.Desktop;
+import java.net.URI;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -44,6 +54,7 @@ public class Main {
     static RegistroEventos eventosETL = new RegistroEventos();
     static boolean extraido = false;
     static boolean transformado = false;
+    static boolean cargado = false;
     static ArbolBST<Estudiante> bst = null;
     static Grafo<String> grafo = null;
     static RegistroEventos ultimoBFS = null;
@@ -112,6 +123,8 @@ public class Main {
         System.out.println("32. Generar reporte técnico   33. Exportar resultados");
         System.out.println("EXTRA");
         System.out.println("34. DEMO completa automática  35. Historial de opciones");
+        System.out.println("36. MODO GUIADO (paso a paso)");
+        System.out.println("37. Visualizar grafo en navegador");
         System.out.println(" 0. Salir");
         System.out.println("====================================================");
     }
@@ -154,6 +167,8 @@ public class Main {
             case 33: opExportar(); break;
             case 34: ejecutarDemo(); break;
             case 35: historial.mostrarAtras(20); break;
+            case 36: opModoGuiado(); break;
+            case 37: opVisualizarGrafo(); break;
             default: System.out.println("Opción no válida.");
         }
     }
@@ -168,6 +183,7 @@ public class Main {
         bst = null;
         grafo = null;
         transformado = false;
+        cargado = false;
         cola = extract.extraer(DATOS, eventosETL);
         extraido = true;
         System.out.println("Extract completo: " + cola.tamanio() + " registros encolados desde " + DATOS + "/ (FIFO).");
@@ -235,6 +251,7 @@ public class Main {
         }
         try {
             load.cargar(transform, SALIDA);
+            cargado = true;
             System.out.println("Load completo. Archivos escritos en " + SALIDA + "/");
         } catch (IOException e) {
             System.out.println("[ERROR] No se pudo escribir: " + e.getMessage());
@@ -440,6 +457,8 @@ public class Main {
             return;
         }
         grafo = new Grafo<>();
+        ultimoBFS = null;
+        ultimoDFS = null;
         for (Asignatura a : transform.asignaturas) {
             grafo.agregarVertice(a.getCodigo());
         }
@@ -475,17 +494,10 @@ public class Main {
         String inicio = leerLinea("Código de inicio (ej. SIS101): ").toUpperCase();
         RegistroEventos ev = new RegistroEventos();
         System.out.println((esBFS ? "BFS (usa COLA)" : "DFS (usa PILA)") + " desde " + inicio + ":");
-        ListaEnlazada<String> orden = esBFS
-                ? BFS.recorrer(grafo, inicio, ev, true)
-                : DFS.recorrer(grafo, inicio, ev, true);
+        ListaEnlazada<String> orden = recorrerGrafo(esBFS, inicio, ev, true);
         if (orden == null) {
             System.out.println("No existe ese vértice.");
             return;
-        }
-        if (esBFS) {
-            ultimoBFS = ev;
-        } else {
-            ultimoDFS = ev;
         }
         System.out.println("Orden de visita: " + orden);
         if (esBFS) {
@@ -495,6 +507,20 @@ public class Main {
             }
             System.out.println();
         }
+    }
+
+    static ListaEnlazada<String> recorrerGrafo(boolean esBFS, String inicio, RegistroEventos eventos, boolean imprimir) {
+        ListaEnlazada<String> orden = esBFS
+                ? BFS.recorrer(grafo, inicio, eventos, imprimir)
+                : DFS.recorrer(grafo, inicio, eventos, imprimir);
+        if (orden != null) {
+            if (esBFS) {
+                ultimoBFS = eventos;
+            } else {
+                ultimoDFS = eventos;
+            }
+        }
+        return orden;
     }
 
     static void opBuscarRuta() {
@@ -595,38 +621,130 @@ public class Main {
         System.out.println(analizador.analizarErrores(transform));
     }
 
-    /** Genera los 7 flujogramas obligatorios y la documentación. Construye lo que falte. */
+    /** Genera los siete flujogramas y la documentación para el menú de consola. */
     static void opGenerarDocumentacion() {
         if (!requiereTransformado()) {
             return;
         }
+        Map<Path, Long> antes = fotoSalida();
+        generarDocumentacion("", "", false, true, true);
+        mostrarGenerado(antes);
+    }
+
+    record Diagrama(String titulo, String codigo) {}
+
+    record Documentacion(List<Diagrama> diagramas, String texto, String ciclos,
+                         String origenBfs, String origenDfs, List<RegistroEventos> recorridos) {}
+
+    static Documentacion generarDocumentacion(String inicioBfs, String inicioDfs, boolean buscarRaiz,
+                                              boolean diagramasIA, boolean textoIA) {
         if (bst == null) {
             opConstruirBST();
         }
         if (grafo == null) {
             opConstruirGrafo();
         }
-        System.out.println("Generando los 7 flujogramas obligatorios...");
-        flujogramas.generarETL(eventosETL, transform);
-                flujogramas.setIAEnEstructuras(false);   // Cola, Pila y Lista son fijas: se evita gastar cuota de la IA
-        flujogramas.generarCola();
-        flujogramas.generarPila();
-        flujogramas.generarLista();
-        flujogramas.setIAEnEstructuras(true);
-        bst.buscar(Estudiante.sonda(bst.getRaiz().dato.getCedula()));
-        String ultimo = bst.inOrden().obtener(bst.contarNodos() - 1).getCedula();
-        bst.buscar(Estudiante.sonda(ultimo));
-        flujogramas.generarBST(bst);
-        String inicio = grafo.getVertices().obtener(0).dato;
-        ultimoBFS = new RegistroEventos();
-        BFS.recorrer(grafo, inicio, ultimoBFS, false);
-        flujogramas.generarRecorrido(true, ultimoBFS);
-        ultimoDFS = new RegistroEventos();
-        DFS.recorrer(grafo, inicio, ultimoDFS, false);
-        flujogramas.generarRecorrido(false, ultimoDFS);
-        System.out.println("Generando documentación...");
-        analizador.documentacion(resumenSistema());
+        GeneradorFlujograma generador = new GeneradorFlujograma(diagramasIA ? ia : null, SALIDA);
+        generador.setIAEnEstructuras(false);
+        List<Diagrama> diagramas = new ArrayList<>();
+        diagramas.add(new Diagrama("ETL completo", generador.generarETL(eventosETL, transform)));
+        diagramas.add(new Diagrama("Cola", generador.generarCola()));
+        diagramas.add(new Diagrama("Pila", generador.generarPila()));
+        diagramas.add(new Diagrama("Lista enlazada", generador.generarLista()));
+
+        diagramas.add(new Diagrama("Búsqueda en el BST", documentarBusquedaBST(generador, buscarRaiz)));
+        String arbol = bst.aMermaid();
+        diagramas.add(new Diagrama("Árbol BST", arbol));
+        RegistroEventos bfs = new RegistroEventos();
+        RegistroEventos dfs = new RegistroEventos();
+        if (!grafo.estaVacio()) {
+            String primero = grafo.getVertices().obtener(0).dato;
+            inicioBfs = inicioBfs.isEmpty() ? primero : inicioBfs;
+            inicioDfs = inicioDfs.isEmpty() ? primero : inicioDfs;
+            recorrerGrafo(true, inicioBfs, bfs, false);
+            recorrerGrafo(false, inicioDfs, dfs, false);
+        }
+        diagramas.add(new Diagrama("Grafo + BFS", generador.generarRecorrido(true, bfs)));
+        diagramas.add(new Diagrama("Grafo + DFS", generador.generarRecorrido(false, dfs)));
+        try {
+            guardarDiagramaEstado("arbol_bst_estado.md", "Estado del BST", arbol);
+            guardarDiagramaEstado("grafo_prerrequisitos.md", "Grafo de prerrequisitos", grafo.aMermaid());
+        } catch (IOException e) {
+            System.out.println("[ERROR] No se pudo guardar el árbol o el grafo: " + e.getMessage());
+        }
+        String resumen = resumenSistema();
+        if (!grafo.estaVacio()) {
+            resumen += "Origen del recorrido BFS: " + inicioBfs + "\nOrigen del recorrido DFS: " + inicioDfs + "\n";
+        }
+        String texto = analizador.documentacion(resumen, textoIA);
+        return new Documentacion(diagramas, texto, AnalizadorIA.textoCiclos(grafo),
+                inicioBfs, inicioDfs, List.of(bfs, dfs));
     }
+
+    private static void guardarDiagramaEstado(String archivo, String titulo, String codigo) throws IOException {
+        Load.escribirTexto(SALIDA + "/diagramas/" + archivo, "# " + titulo + "\n\n```mermaid\n" + codigo + "```\n");
+    }
+
+    static String documentarBusquedaBST(GeneradorFlujograma generador, boolean buscarRaiz) {
+        if (!bst.estaVacio()) {
+            String clave = buscarRaiz ? bst.getRaiz().dato.getCedula()
+                    : bst.inOrden().obtener(bst.contarNodos() - 1).getCedula();
+            bst.buscar(Estudiante.sonda(clave));
+        }
+        return generador.generarBST(bst);
+    }
+
+/** Lista los archivos de texto que hay en output/ con su fecha de modificación. */
+static Map<Path, Long> fotoSalida() {
+    Map<Path, Long> foto = new HashMap<>();
+    Path raiz = Path.of(SALIDA);
+    if (!Files.exists(raiz)) {
+        return foto;
+    }
+    try (Stream<Path> s = Files.walk(raiz)) {
+        s.filter(Files::isRegularFile).forEach(p -> foto.put(p, modificado(p)));
+    } catch (IOException e) {
+        // se ignora: solo afecta a lo que se muestra
+    }
+    return foto;
+}
+
+static long modificado(Path p) {
+    try {
+        return Files.getLastModifiedTime(p).toMillis();
+    } catch (IOException e) {
+        return 0L;
+    }
+}
+
+/** Imprime el contenido de los archivos de texto nuevos o modificados desde la foto "antes". */
+static void mostrarGenerado(Map<Path, Long> antes) {
+    List<Path> nuevos = new ArrayList<>();
+    for (Map.Entry<Path, Long> e : fotoSalida().entrySet()) {
+        String nombre = e.getKey().getFileName().toString().toLowerCase();
+        boolean esTexto = nombre.endsWith(".md") || nombre.endsWith(".mmd") || nombre.endsWith(".txt");
+        Long previo = antes.get(e.getKey());
+        if (esTexto && (previo == null || !previo.equals(e.getValue()))) {
+            nuevos.add(e.getKey());
+        }
+    }
+    nuevos.sort(Comparator.comparingLong(Main::modificado).thenComparing(Path::toString));
+    if (nuevos.isEmpty()) {
+        System.out.println("No se encontraron archivos nuevos para mostrar.");
+        return;
+    }
+    System.out.println();
+    System.out.println("=== DOCUMENTACIÓN GENERADA (" + nuevos.size() + " archivos) ===");
+    for (Path p : nuevos) {
+        System.out.println();
+        System.out.println("=== " + p.getFileName() + " ===");
+        try {
+            System.out.println(Files.readString(p, StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            System.out.println("[ERROR] No se pudo leer " + p + ": " + e.getMessage());
+        }
+    }
+}
 
     static String resumenSistema() {
         StringBuilder sb = new StringBuilder();
@@ -650,9 +768,9 @@ public class Main {
 
     // =================================================================== REPORTES
 
-    static void opReporteTecnico() {
+    static String opReporteTecnico() {
         if (!requiereTransformado()) {
-            return;
+            return "";
         }
         StringBuilder sb = new StringBuilder();
         sb.append("REPORTE TÉCNICO - SmartETL-DS + IA (Grupo 3)\n");
@@ -676,6 +794,7 @@ public class Main {
         } catch (IOException e) {
             System.out.println("[ERROR] " + e.getMessage());
         }
+        return sb.toString();
     }
 
     static void opExportar() {
@@ -690,12 +809,10 @@ public class Main {
                     sb.append(e).append("\n");
                 }
                 Load.escribirTexto(SALIDA + "/estudiantes_inorden.txt", sb.toString());
-                Load.escribirTexto(SALIDA + "/diagramas/arbol_bst_estado.md",
-                        "# Estado del BST\n\n```mermaid\n" + bst.aMermaid() + "```\n");
+                guardarDiagramaEstado("arbol_bst_estado.md", "Estado del BST", bst.aMermaid());
             }
             if (grafo != null) {
-                Load.escribirTexto(SALIDA + "/diagramas/grafo_prerrequisitos.md",
-                        "# Grafo de prerrequisitos\n\n```mermaid\n" + grafo.aMermaid() + "```\n");
+                guardarDiagramaEstado("grafo_prerrequisitos.md", "Grafo de prerrequisitos", grafo.aMermaid());
             }
             System.out.println("Resultados exportados a " + SALIDA + "/");
         } catch (IOException e) {
@@ -735,6 +852,429 @@ public class Main {
         opExportar();
         System.out.println("##### FIN DEMO #####");
     }
+    // ============================================================
+// MODO GUIADO - SMARTETL-DS
+// ============================================================
+
+static void opModoGuiado() {
+
+    int opcion;
+
+    do {
+
+        System.out.println();
+        System.out.println("==========================================");
+        System.out.println("       SMARTETL-DS - MODO GUIADO");
+        System.out.println("==========================================");
+
+        System.out.println("1. Ejecutar proceso ETL");
+        System.out.println("2. Trabajar con estructuras de datos");
+        System.out.println("3. Trabajar con el grafo");
+        System.out.println("4. Generar reportes y documentación");
+        System.out.println("0. Regresar al menú principal");
+
+        opcion = leerEntero("¿Qué desea hacer?: ");
+
+        switch (opcion) {
+
+            case 1:
+                guiadoETL();
+                break;
+
+            case 2:
+                guiadoEstructuras();
+                break;
+
+            case 3:
+                guiadoGrafo();
+                break;
+
+            case 4:
+                guiadoReportes();
+                break;
+
+            case 0:
+                System.out.println("Regresando al menú principal...");
+                break;
+
+            default:
+                System.out.println("Opción no válida.");
+        }
+
+    } while (opcion != 0);
+}
+static void guiadoETL() {
+
+    int opcion;
+
+    do {
+
+        System.out.println();
+        System.out.println("========== PROCESO ETL ==========");
+        System.out.println("1. Extraer datos");
+        System.out.println("2. Mostrar datos extraídos");
+        System.out.println("3. Transformar datos");
+        System.out.println("4. Mostrar datos válidos");
+        System.out.println("5. Mostrar errores");
+        System.out.println("6. Cargar datos");
+        System.out.println("0. Regresar");
+
+        opcion = leerEntero("Seleccione una opción: ");
+
+        switch (opcion) {
+
+            case 1:
+                opExtraer();
+                break;
+
+            case 2:
+                opMostrarCola();
+                break;
+
+            case 3:
+                opTransformar();
+                break;
+
+            case 4:
+                opMostrarValidos();
+                break;
+
+            case 5:
+                opMostrarErrores();
+                break;
+
+            case 6:
+                opCargar();
+                break;
+
+            case 0:
+                break;
+
+            default:
+                System.out.println("Opción incorrecta.");
+        }
+
+    } while (opcion != 0);
+}
+static void guiadoEstructuras() {
+
+    int opcion;
+
+    do {
+
+        System.out.println();
+        System.out.println("======= ESTRUCTURAS DE DATOS =======");
+        System.out.println("1. Lista enlazada");
+        System.out.println("2. Buscar estudiante");
+        System.out.println("3. Ordenar estudiantes");
+        System.out.println("4. Construir árbol BST");
+        System.out.println("5. Insertar en BST");
+        System.out.println("6. Buscar en BST");
+        System.out.println("7. Eliminar en BST");
+        System.out.println("8. Recorrido InOrden");
+        System.out.println("9. Recorrido PreOrden");
+        System.out.println("10. Recorrido PostOrden");
+        System.out.println("11. Altura y nodos del BST");
+        System.out.println("0. Regresar");
+
+        opcion = leerEntero("Seleccione una opción: ");
+
+        switch (opcion) {
+
+            case 1:
+                opMostrarLista();
+                break;
+
+            case 2:
+                opBuscarRegistro();
+                break;
+
+            case 3:
+                opOrdenar();
+                break;
+
+            case 4:
+                opConstruirBST();
+                break;
+
+            case 5:
+                opInsertarBST();
+                break;
+
+            case 6:
+                opBuscarBST();
+                break;
+
+            case 7:
+                opEliminarBST();
+                break;
+
+            case 8:
+                opRecorrido(1);
+                break;
+
+            case 9:
+                opRecorrido(2);
+                break;
+
+            case 10:
+                opRecorrido(3);
+                break;
+
+            case 11:
+                opAlturaNodos();
+                break;
+
+            case 0:
+                break;
+
+            default:
+                System.out.println("Opción incorrecta.");
+        }
+
+    } while (opcion != 0);
+}
+static void guiadoGrafo() {
+
+    int opcion;
+
+    do {
+
+        System.out.println();
+        System.out.println("========== GRAFO ==========");
+        System.out.println("1. Construir grafo");
+        System.out.println("2. Mostrar conexiones");
+        System.out.println("3. Visualizar grafo");
+        System.out.println("4. Recorrido BFS");
+        System.out.println("5. Recorrido DFS");
+        System.out.println("6. Buscar ruta");
+        System.out.println("7. Detectar ciclos");
+        System.out.println("8. Explicación del grafo con IA");
+        System.out.println("0. Regresar");
+
+        opcion = leerEntero("Seleccione una opción: ");
+
+        switch (opcion) {
+
+            case 1:
+                opConstruirGrafo();
+                break;
+
+            case 2:
+                opMostrarConexiones();
+                break;
+
+            case 3:
+                opVisualizarGrafo();
+                break;
+
+            case 4:
+                opRecorridoGrafo(true);
+                break;
+
+            case 5:
+                opRecorridoGrafo(false);
+                break;
+
+            case 6:
+                opBuscarRuta();
+                break;
+
+            case 7:
+                opDetectarCiclos();
+                break;
+
+            case 8:
+                opExplicarGrafo();
+                break;
+
+            case 0:
+                break;
+
+            default:
+                System.out.println("Opción incorrecta.");
+        }
+
+    } while (opcion != 0);
+}
+static void opVisualizarGrafo() {
+
+    if (!requiereGrafo()) {
+        return;
+    }
+
+    if (grafo.estaVacio()) {
+        System.out.println("El grafo no contiene vértices.");
+        return;
+    }
+
+    try {
+
+        Path carpeta = Path.of(SALIDA, "diagramas");
+
+        Files.createDirectories(carpeta);
+
+        Path archivo = carpeta.resolve("grafo_visual.html");
+
+        String mermaid = grafo.aMermaid();
+
+        String html = """
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Grafo SmartETL-DS</title>
+
+                    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            background: #f3f4f6;
+                            margin: 0;
+                            padding: 30px;
+                        }
+
+                        h1 {
+                            text-align: center;
+                            color: #1e293b;
+                        }
+
+                        .contenedor {
+                            background: white;
+                            padding: 25px;
+                            border-radius: 15px;
+                            box-shadow: 0 4px 12px rgba(0,0,0,.1);
+                            overflow: auto;
+                        }
+
+                        .mermaid {
+                            text-align: center;
+                        }
+                    </style>
+                </head>
+
+                <body>
+
+                    <h1>Grafo de Prerrequisitos - SmartETL-DS</h1>
+
+                    <div class="contenedor">
+                        <pre class="mermaid">
+                """ + mermaid + """
+                        </pre>
+                    </div>
+
+                    <script>
+                        mermaid.initialize({
+                            startOnLoad: true,
+                            theme: 'default',
+                            flowchart: {
+                                curve: 'basis'
+                            }
+                        });
+                    </script>
+
+                </body>
+                </html>
+                """;
+
+        Files.writeString(
+                archivo,
+                html,
+                StandardCharsets.UTF_8
+        );
+
+        System.out.println();
+        System.out.println("=====================================");
+        System.out.println("GRAFO GENERADO CORRECTAMENTE");
+        System.out.println("=====================================");
+        System.out.println("Archivo: " + archivo.toAbsolutePath());
+
+        if (Desktop.isDesktopSupported()) {
+
+            Desktop.getDesktop().browse(
+                    archivo.toAbsolutePath().toUri()
+            );
+
+            System.out.println("Abriendo grafo en el navegador...");
+
+        } else {
+
+            System.out.println(
+                    "No se pudo abrir automáticamente."
+            );
+
+            System.out.println(
+                    "Abra manualmente el archivo HTML indicado."
+            );
+        }
+
+    } catch (Exception e) {
+
+        System.out.println(
+                "[ERROR] No se pudo visualizar el grafo: "
+                + e.getMessage()
+        );
+    }
+}
+static void guiadoReportes() {
+
+    int opcion;
+
+    do {
+
+        System.out.println();
+        System.out.println("======= REPORTES =======");
+        System.out.println("1. Generar documentación");
+        System.out.println("2. Generar reporte técnico");
+        System.out.println("3. Exportar resultados");
+        System.out.println("4. Generar flujograma ETL");
+        System.out.println("5. Explicar BST con IA");
+        System.out.println("6. Explicar grafo con IA");
+        System.out.println("7. Analizar errores ETL");
+        System.out.println("0. Regresar");
+
+        opcion = leerEntero("Seleccione una opción: ");
+
+        switch (opcion) {
+
+            case 1:
+                opGenerarDocumentacion();
+                break;
+
+            case 2:
+                opReporteTecnico();
+                break;
+
+            case 3:
+                opExportar();
+                break;
+
+            case 4:
+                opFlujogramaETL();
+                break;
+
+            case 5:
+                opExplicarArbol();
+                break;
+
+            case 6:
+                opExplicarGrafo();
+                break;
+
+            case 7:
+                opAnalizarErrores();
+                break;
+
+            case 0:
+                break;
+
+            default:
+                System.out.println("Opción incorrecta.");
+        }
+
+    } while (opcion != 0);
+}
 
     // ================================================================== ENTRADA
 

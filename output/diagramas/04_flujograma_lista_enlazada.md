@@ -1,6 +1,6 @@
 # Flujograma: Lista enlazada (insertar y buscar)
 
-**Origen:** Generador local (estructura fija: la IA se reserva para los flujogramas con datos reales)
+**Origen:** Generador local
 
 ```mermaid
 flowchart TD
@@ -28,5 +28,5 @@ flowchart TD
 ```text
 Lista enlazada simple con referencias cabeza y cola.
 insertar(x): crear nodo; si la lista esta vacia cabeza y cola apuntan al nodo; si no cola.siguiente = nodo y cola = nodo.
-buscar(criterio): actual = cabeza; mientras actual no sea null: si cumple el criterio devolver el dato; avanzar actual = actual.siguiente; al terminar devolver null.
+buscar(criterio): recorrer desde cabeza; si cumple devolver dato; al terminar devolver null.
 ```

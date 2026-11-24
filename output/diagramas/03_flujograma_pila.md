@@ -1,6 +1,6 @@
 # Flujograma: Pila (apilar y desapilar)
 
-**Origen:** Generador local (estructura fija: la IA se reserva para los flujogramas con datos reales)
+**Origen:** Generador local
 
 ```mermaid
 flowchart TD

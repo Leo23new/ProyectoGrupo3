@@ -8,13 +8,17 @@ import estructuras.ListaEnlazada;
  * a la IA (o al generador local) para producir el flujograma. Así el diagrama sale de
  * datos reales de la ejecución y no de un texto fijo.
  *
- * Cada evento = [tipo, detalle].
+ * Cada evento contiene el tipo, el detalle y, si corresponde, el código del vértice.
  */
 public class RegistroEventos {
     private final ListaEnlazada<String[]> eventos = new ListaEnlazada<>();
 
     public void registrar(String tipo, String detalle) {
-        eventos.insertar(new String[]{tipo, detalle});
+        registrar(tipo, detalle, null);
+    }
+
+    public void registrar(String tipo, String detalle, String vertice) {
+        eventos.insertar(new String[]{tipo, detalle, vertice});
     }
 
     public ListaEnlazada<String[]> getEventos() {

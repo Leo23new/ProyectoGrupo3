@@ -1,5 +1,5 @@
 REPORTE ETL - SmartETL-DS + IA
-Generado: 2026-11-23 15:21:47
+Generado: 2026-11-24 12:53:24
 ============================================================
 
 Fuente                 Procesados  Válidos  Inválidos

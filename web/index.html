@@ -24,8 +24,9 @@ main{display:grid;grid-template-columns:340px 1fr;gap:20px;padding:20px 24px;ali
 .menu button b{color:var(--teal);display:inline-block;min-width:28px}
 .menu button.demo{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:600}
 .menu button.demo b{color:#fff}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;min-height:300px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;min-height:300px;min-width:0}
 .panel h2{margin:0 0 4px;font-size:18px}
+.panel h3{margin:22px 0 0;font-size:16px;color:var(--teal)}
 form{display:none;margin:12px 0;padding:12px;border:1px dashed var(--teal);border-radius:10px}
 form.on{display:block}
 form label{display:block;font-size:13px;color:var(--ink2);margin:8px 0 2px}
@@ -36,6 +37,52 @@ pre{margin:12px 0 0;padding:16px;background:var(--term);color:var(--termTx);bord
 .diag:empty{display:none}
 .hint{color:var(--ink2);font-size:14px}
 .busy{opacity:.6;pointer-events:none}
+.acciones{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0}
+.acciones button,.acciones select{padding:7px 11px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font:inherit}
+.acciones button:not(:disabled){cursor:pointer}
+.acciones button:not(:disabled):hover,.acciones button[aria-current="step"]{border-color:var(--teal);color:var(--teal);background:color-mix(in srgb,var(--teal) 8%,var(--card))}
+.acciones button:disabled{opacity:.5}
+.guia{margin:12px 0;padding:12px;border:1px solid var(--line);border-radius:10px}
+.guia p{margin:0}
+.grafo-visor{overflow:auto;max-height:530px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.grafo-lienzo{position:relative}
+.grafo-lienzo svg{position:absolute;inset:0;pointer-events:none;color:var(--ink2)}
+.grafo-lienzo path{opacity:.75}
+.grafo-lienzo path.relacion{stroke:var(--teal);stroke-width:2.5;opacity:1}
+.nivel-grafo,.nodo-grafo{position:absolute}
+.nivel-grafo{font-size:13px;font-weight:600;color:var(--ink2);text-align:center}
+.nodo-grafo{height:46px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:600 14px system-ui;cursor:pointer}
+.nodo-grafo.visitado{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 16%,var(--card))}
+.nodo-grafo[aria-pressed="true"]{border:2px solid var(--teal)}
+.nodo-grafo.activo{outline:3px solid var(--amber);outline-offset:-4px}
+.grafo-detalle,.traza-detalle{overflow-wrap:anywhere}
+.traza-detalle{min-height:3em}
+.traza-rango{min-width:90px;max-width:200px;flex:1;accent-color:var(--teal)}
+.texto-ia{white-space:pre-wrap;overflow-wrap:anywhere}
+.estudio{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,.9fr);gap:16px}
+@media(max-width:1200px){.estudio{grid-template-columns:minmax(0,1fr)}}
+.estudio-panel{min-width:0;padding:14px;border:1px solid var(--line);border-radius:12px}
+.estudio-panel h3{margin-top:0}
+.estudio-pasos{border-bottom:1px solid var(--line);padding-bottom:10px}
+.estudio select{max-width:100%}
+.chat-mensajes{display:grid;gap:9px;align-content:start;min-height:140px;max-height:370px;overflow:auto;padding:4px}
+.chat-mensaje{width:fit-content;max-width:92%;padding:8px 12px;border-radius:10px;background:var(--paper);white-space:pre-wrap;overflow-wrap:anywhere}
+.chat-mensaje b{display:block;font-size:13px;color:var(--teal)}
+.chat-mensaje.usuario{justify-self:end;background:color-mix(in srgb,var(--teal) 12%,var(--card))}
+.chat-form{display:grid;gap:8px;border:0;padding:0;margin-bottom:0}
+.chat-form textarea{width:100%;min-height:64px;resize:vertical;border:1px solid var(--line);border-radius:7px;padding:8px;background:var(--paper);color:var(--ink);font:inherit}
+.acciones .principal{background:var(--tealD);color:white;border-color:var(--tealD);font-weight:600}
+.acciones .principal:not(:disabled):hover{background:var(--tealD);color:white}
+.documentacion-final{margin-top:16px}
+.documentacion-final details{padding:10px 12px;margin:8px 0;border:1px solid var(--line);border-radius:9px}
+.documentacion-final summary{cursor:pointer;font-weight:600}
+.documentacion-final article p{white-space:pre-wrap;overflow-wrap:anywhere}
+.flujo-visor{max-height:530px}
+.flujo-nodo{position:absolute;display:grid;place-items:center;padding:8px 11px;text-align:center;border:1px solid var(--line);border-radius:8px;background:var(--card);font:inherit;font-size:13px;color:var(--ink);cursor:pointer}
+.flujo-nodo[data-tipo="decision"]{border-color:var(--amber);border-style:dashed}
+.flujo-nodo[data-tipo="terminal"]{border-radius:28px}
+.flujo-nodo[aria-pressed="true"]{outline:2px solid var(--teal)}
+.flujo-enlace{font:12px system-ui;paint-order:stroke;stroke:var(--paper);stroke-width:3;stroke-linejoin:round;fill:var(--ink)}
 </style>
 </head>
 <body>
@@ -48,10 +95,10 @@ pre{margin:12px 0 0;padding:16px;background:var(--term);color:var(--termTx);bord
   <nav class="menu" id="menu"></nav>
   <section class="panel" id="panel">
     <h2 id="titulo">Bienvenido</h2>
-    <p class="hint" id="ayuda">Empiece por <b>1. Extraer datos</b> y siga el orden del menú. Cada botón ejecuta la misma opción del menú de consola.</p>
+    <p class="hint" id="ayuda">Empieza por <b>1. Extraer datos</b> o abre <b>31. Chat guiado y documentación</b> para preparar el flujo paso a paso.</p>
+    <div id="guia" class="guia" hidden></div>
     <form id="form"></form>
-    <div class="diag" id="diag"></div>
-    <pre id="salida" hidden></pre>
+    <div id="resultado"></div>
   </section>
 </main>
 
@@ -60,9 +107,9 @@ const GRUPOS=[
  ["ETL",[[1,"Extraer datos"],[2,"Mostrar cola de extracción"],[3,"Transformar datos"],[4,"Mostrar registros válidos"],[5,"Mostrar pila de errores"],[6,"Cargar datos"]]],
  ["Estructuras y algoritmos",[[7,"Mostrar lista enlazada"],[8,"Buscar registro"],[9,"Ordenar registros"]]],
  ["Árboles (BST)",[[10,"Construir BST"],[11,"Insertar"],[12,"Buscar"],[13,"Eliminar"],[14,"InOrden"],[15,"PreOrden"],[16,"PostOrden"],[17,"Altura y número de nodos"]]],
- ["Grafos",[[18,"Construir grafo"],[19,"Mostrar conexiones"],[20,"BFS"],[21,"DFS"],[22,"Buscar ruta"],[23,"Detectar ciclos"]]],
- ["Inteligencia artificial",[[24,"Flujograma ETL"],[25,"Flujograma de una estructura"],[26,"Flujograma BFS"],[27,"Flujograma DFS"],[28,"Explicar árbol"],[29,"Explicar grafo"],[30,"Analizar errores ETL"],[31,"Generar documentación (7 flujogramas)"]]],
- ["Reportes",[[32,"Generar reporte técnico"],[33,"Exportar resultados"],[35,"Historial de opciones"]]]
+ ["Grafos",[[18,"Construir grafo"],[19,"Mostrar conexiones"],[20,"BFS"],[21,"DFS"],[22,"Buscar ruta"],[23,"Detectar ciclos"],[37,"Visualizar grafo"]]],
+ ["Inteligencia artificial",[[24,"Flujograma ETL"],[25,"Flujograma de una estructura"],[26,"Flujograma BFS"],[27,"Flujograma DFS"],[28,"Explicar árbol"],[29,"Explicar grafo"],[30,"Analizar errores ETL"],[31,"Chat guiado y documentación"]]],
+ ["Reportes",[[32,"Generar reporte técnico"],[33,"Exportar resultados"],[35,"Historial de opciones"]],]
 ];
 // Datos que pide cada opción: [etiqueta, tipo, valor por defecto, opciones]
 const ENTRADAS={
@@ -80,12 +127,97 @@ const ENTRADAS={
 };
 const $=id=>document.getElementById(id);
 let actual=null;
+let pasoGuiado=0;
+
+const PASOS_GUIADOS=[
+  {
+    titulo:"Paso 1 · Extracción",
+    descripcion:"Lee los archivos de entrada y carga los registros en la cola.",
+    opcion:1
+  },
+  {
+    titulo:"Paso 2 · Transformación",
+    descripcion:"Valida y transforma los registros extraídos.",
+    opcion:3
+  },
+  {
+    titulo:"Paso 3 · Carga",
+    descripcion:"Guarda los registros procesados y los resultados.",
+    opcion:6
+  },
+  {
+    titulo:"Paso 4 · Construcción del BST",
+    descripcion:"Construye el árbol binario de búsqueda a partir de los estudiantes válidos.",
+    opcion:10
+  },
+  {
+    titulo:"Paso 5 · Construcción del grafo",
+    descripcion:"Crea el grafo dirigido de prerrequisitos de las asignaturas.",
+    opcion:18
+  },
+  {
+    titulo:"Paso 6 · Visualización del grafo",
+    descripcion:"Explora los prerrequisitos y recorre el grafo paso a paso con BFS o DFS.",
+    opcion:37
+  },
+  {
+    titulo:"Paso 7 · Reporte técnico",
+    descripcion:"Genera el reporte técnico de los resultados.",
+    opcion:32
+  },
+  {
+    titulo:"Paso 8 · Documentación",
+    descripcion:"Abre el chat de la opción 31 y genera todos los diagramas y resultados.",
+    opcion:31
+  }
+];
+
+function modoGuiado(){
+  pasoGuiado=0;
+  mostrarPasoGuiado();
+  mostrarPanelEnPantallaEstrecha();
+}
+
+function mostrarPasoGuiado(){
+  actual=null;
+  $('form').classList.remove('on');
+  $('form').innerHTML='';
+  const paso=PASOS_GUIADOS[pasoGuiado];
+  $('titulo').textContent='Modo guiado';
+  $('ayuda').textContent='Puede seleccionar un paso o seguir el orden del menú.';
+  $('resultado').replaceChildren();
+  $('guia').hidden=false;
+  $('guia').innerHTML=`
+    <div class="acciones" role="group" aria-label="Pasos del modo guiado">
+      ${PASOS_GUIADOS.map((p,i)=>`<button type="button" onclick="irAPaso(${i})" ${i===pasoGuiado?'aria-current="step"':''}>${p.titulo.replace(/^Paso /,'')}</button>`).join('')}
+    </div>
+    <p>${paso.descripcion}</p>
+    <div class="acciones">
+      <button type="button" onclick="irAPaso(${pasoGuiado-1})" ${pasoGuiado===0?'disabled':''}>Anterior</button>
+      <button type="button" onclick="ejecutarPasoGuiado()">Ejecutar este paso</button>
+      <button type="button" onclick="irAPaso(${pasoGuiado+1})" ${pasoGuiado===PASOS_GUIADOS.length-1?'disabled':''}>Siguiente</button>
+    </div>
+  `;
+}
+
+function ejecutarPasoGuiado(){
+  const p=PASOS_GUIADOS[pasoGuiado];
+  pedir(p.opcion,p.titulo,true);
+}
+
+function irAPaso(indice){
+  pasoGuiado=indice;
+  mostrarPasoGuiado();
+  $('guia').querySelector('[aria-current="step"]').focus();
+}
 
 function armarMenu(){
   let h='<button class="demo" onclick="pedir(34,\'DEMO completa automática\')"><b>▶</b> DEMO completa automática</button>';
+h+='<button class="demo" onclick="modoGuiado()"><b>36.</b> MODO GUIADO PASO A PASO</button>';
+  h+='<button class="demo" onclick="pedir(31,\'Chat guiado y documentación\')"><b>31.</b> CHAT GUIADO Y DOCUMENTACIÓN</button>';
   for(const [g,ops] of GRUPOS){
     h+='<h2>'+g+'</h2>';
-    for(const [n,t] of ops) h+='<button onclick="pedir('+n+',\''+t.replace(/'/g,"\\'")+'\')"><b>'+n+'.</b>'+t+'</button>';
+    for(const [n,t] of ops) if(n!==31) h+='<button onclick="pedir('+n+',\''+t.replace(/'/g,"\\'")+'\')"><b>'+n+'.</b>'+t+'</button>';
   }
   $('menu').innerHTML=h;
 }
@@ -95,17 +227,30 @@ async function estado(){
     const e=await (await fetch('/api/estado')).json();
     const c=(t,ok)=>'<span class="chip'+(ok?' ok':'')+'">'+(ok?'✓ ':'')+t+'</span>';
     $('chips').innerHTML=c('Extraído',e.extraido)+c('Transformado',e.transformado)+c('BST construido',e.bst)+c('Grafo construido',e.grafo)+
-      '<span class="chip'+(e.ia?' ok':'')+'">IA: '+(e.ia?'API conectada ('+e.proveedor+')':'modo local, sin API key')+'</span>';
+      '<span class="chip'+(e.ia?' ok':'')+'">IA: '+(e.ia?'API configurada ('+e.proveedor+')':'modo local, sin API key')+'</span>';
   }catch(_){}
 }
 
-function pedir(n,titulo){
-  actual={n,titulo};
-  const campos=ENTRADAS[n];
-  if(!campos){ejecutar();return;}
+function mostrarPanelEnPantallaEstrecha(){
+  if(window.matchMedia('(max-width:900px)').matches) $('panel').scrollIntoView();
+}
+
+function pedir(n, titulo, guiado=false) {
+    $('guia').hidden=!guiado;
+    if(!guiado) mostrarPanelEnPantallaEstrecha();
+    actual = { n, titulo };
+
+    const campos = ENTRADAS[n];
+
+    if (!campos) {
+        $('form').classList.remove('on');
+        $('form').innerHTML = '';
+        ejecutar();
+        return;
+    }
   $('titulo').textContent=n+'. '+titulo;
   $('ayuda').textContent='Complete los datos y pulse Ejecutar.';
-  $('diag').innerHTML='';$('salida').hidden=true;
+  $('resultado').innerHTML='';
   let h='';
   campos.forEach((c,i)=>{
     h+='<label for="f'+i+'">'+c[0]+'</label>';
@@ -126,35 +271,923 @@ async function ejecutar(){
   $('ayuda').textContent='Ejecutando…';
   $('form').classList.remove('on');
   $('menu').classList.add('busy');
+  $('menu').inert=true;
+  $('guia').inert=true;
   try{
-    const r=await fetch('/api/ejecutar?opcion='+n,{method:'POST',body:cuerpo});
-    mostrar(await r.text());
-    $('ayuda').textContent='Resultado:';
+    if(n===31){
+      await mostrarEstudio();
+      $('ayuda').textContent='Elige una etapa, consulta al tutor y decide cuándo ejecutarla.';
+    }else if(n===37){
+      await mostrarGrafo();
+      $('ayuda').textContent='Cada flecha va del prerrequisito a la asignatura que depende de él.';
+    }else{
+      const r=await fetch('/api/ejecutar?opcion='+n,{method:'POST',body:cuerpo});
+      await mostrar(await r.text());
+      $('ayuda').textContent='Resultado:';
+    }
   }catch(err){
-    mostrar('[ERROR] No se pudo contactar al programa. ¿Sigue abierta la ventana donde lo ejecutó?');
+    $('resultado').replaceChildren();
+    $('ayuda').textContent=err.message==='Failed to fetch'
+      ? 'No se pudo contactar al programa. Compruebe que el servidor local sigue abierto.'
+      : err.message;
+  }finally{
+    $('menu').classList.remove('busy');
+    $('menu').inert=false;
+    $('guia').inert=false;
+    estado();
   }
-  $('menu').classList.remove('busy');
-  estado();
+}
+
+async function datosVisuales(url, opciones){
+  const respuesta=await fetch(url,opciones);
+  const datos=await respuesta.json();
+  if(!respuesta.ok) throw new Error(datos.error || 'No se pudo completar la operación.');
+  return datos;
+}
+
+async function mostrarGrafo(cont=$('resultado'),config={}){
+  const {nodos,aristas,ia,proveedor}=config.datos || await datosVisuales('/api/grafo');
+  const guardados=config.recorridos;
+  cont.replaceChildren();
+  if(!nodos.length){
+    const mensaje=document.createElement('p');
+    mensaje.textContent='El grafo no contiene asignaturas.';
+    cont.append(mensaje);
+    return;
+  }
+
+  cont.innerHTML=`
+    <div class="acciones">
+      <label for="origen-grafo">${guardados?'Explorar asignatura':'Asignatura de inicio'}</label>
+      <select id="origen-grafo"></select>
+      <button type="button" id="recorrer-bfs">Ejecutar BFS</button>
+      <button type="button" id="recorrer-dfs">Ejecutar DFS</button>
+    </div>
+    <div class="grafo-visor" id="grafo-visor" tabindex="0" role="region" aria-label="Grafo de prerrequisitos desplazable">
+      <div class="grafo-lienzo" id="grafo-lienzo"></div>
+    </div>
+    <p class="grafo-detalle" id="grafo-detalle" aria-live="polite"></p>
+    <p id="grafo-estado" role="status"></p>
+    <section id="grafo-traza" hidden>
+      <h3 id="traza-titulo"></h3>
+      <div class="acciones">
+        <button type="button" id="traza-anterior">Anterior</button>
+        <input type="range" class="traza-rango" id="traza-rango" aria-label="Paso del recorrido" min="0">
+        <button type="button" id="traza-siguiente">Siguiente</button>
+        <button type="button" id="traza-reiniciar">Reiniciar recorrido</button>
+      </div>
+      <p class="traza-detalle" id="traza-detalle" aria-live="polite"></p>
+      <p class="hint">Borde naranja para el paso actual y fondo verde para las asignaturas visitadas.</p>
+      <p id="traza-orden"></p>
+      <div class="acciones">
+        <button type="button" id="traza-explicar">Explicar el recorrido</button>
+      </div>
+      <p class="texto-ia" id="traza-ia" role="status"></p>
+    </section>`;
+
+  const buscar=id=>cont.querySelector('#'+id);
+  const selector=buscar('origen-grafo');
+  const visor=buscar('grafo-visor');
+  const detalle=buscar('grafo-detalle');
+  const estadoGrafo=buscar('grafo-estado');
+  const traza=buscar('grafo-traza');
+  const rango=buscar('traza-rango');
+  const anterior=buscar('traza-anterior');
+  const siguiente=buscar('traza-siguiente');
+  const reiniciar=buscar('traza-reiniciar');
+  const explicar=buscar('traza-explicar');
+  const textoIA=buscar('traza-ia');
+  const botonesAlgoritmo=[buscar('recorrer-bfs'),buscar('recorrer-dfs')];
+  const materias=new Map(nodos.map(n=>[n.codigo,n]));
+  let recorrido=null;
+  let ocupado=false;
+  explicar.textContent=ia?'Explicar con '+proveedor:'Explicar con IA';
+  if(guardados) explicar.hidden=true;
+  explicar.disabled=!ia;
+  for(const {codigo,nombre} of nodos){
+    selector.add(new Option(codigo+' · '+nombre,codigo));
+  }
+  if(materias.has(config.origen)) selector.value=config.origen;
+  else if(materias.has('SIS101')) selector.value='SIS101';
+
+  const dibujo=dibujarGrafo(buscar('grafo-lienzo'),nodos,aristas,seleccionarMateria,config.vertical);
+  selector.onchange=()=>seleccionarMateria(selector.value);
+  seleccionarMateria(selector.value);
+  botonesAlgoritmo[0].onclick=()=>recorrer('BFS');
+  botonesAlgoritmo[1].onclick=()=>recorrer('DFS');
+  if(guardados){
+    for(const [i,algoritmo] of ['BFS','DFS'].entries()){
+      botonesAlgoritmo[i].textContent='Ver '+algoritmo+' desde '+guardados[algoritmo].origen;
+    }
+  }
+  anterior.onclick=()=>mostrarPaso(Number(rango.value)-1);
+  siguiente.onclick=()=>mostrarPaso(Number(rango.value)+1);
+  reiniciar.onclick=()=>mostrarPaso(0);
+  rango.oninput=()=>mostrarPaso(Number(rango.value));
+  explicar.onclick=explicarRecorrido;
+  if(config.algoritmo && !await recorrer(config.algoritmo)) throw new Error(estadoGrafo.textContent);
+
+  function seleccionarMateria(codigo){
+    selector.value=codigo;
+    for(const [id,boton] of dibujo.botones){
+      boton.setAttribute('aria-pressed',String(id===codigo));
+    }
+    for(const {origen,destino,linea} of dibujo.conexiones){
+      linea.classList.toggle('relacion',origen===codigo || destino===codigo);
+    }
+    const previas=aristas.filter(([,destino])=>destino===codigo).map(([origen])=>origen);
+    const posteriores=aristas.filter(([origen])=>origen===codigo).map(([,destino])=>destino);
+    detalle.textContent=`${codigo} · ${materias.get(codigo).nombre}. Prerrequisitos directos: ${previas.join(', ') || 'ninguno'}. Dependientes directos: ${posteriores.join(', ') || 'ninguno'}.`;
+  }
+
+  function solicitarRecorrido(algoritmo,origen,conIA=false){
+    const consulta=new URLSearchParams({algoritmo});
+    if(conIA) consulta.set('explicar','1');
+    return datosVisuales('/api/grafo?'+consulta,{
+      method:'POST',
+      headers:{'X-Requested-With':'SmartETL'},
+      body:origen
+    });
+  }
+
+  async function recorrer(algoritmo){
+    if(ocupado) return;
+    const guardado=guardados?.[algoritmo];
+    const origen=guardado?.origen || selector.value;
+    ocupado=true;
+    botonesAlgoritmo.forEach(b=>b.disabled=true);
+    explicar.disabled=true;
+    estadoGrafo.textContent='Calculando '+algoritmo+'…';
+    try{
+      const datos=guardado || await solicitarRecorrido(algoritmo,origen);
+      recorrido={algoritmo,origen,...datos};
+      buscar('traza-titulo').textContent=algoritmo+' desde '+origen;
+      buscar('traza-orden').textContent='Orden de visita: '+datos.orden.join(' → ');
+      rango.max=datos.pasos.length-1;
+      textoIA.textContent=ia || guardados?'':'Configure GEMINI_API_KEY en el servidor para habilitar las explicaciones.';
+      traza.hidden=false;
+      mostrarPaso(0);
+      estadoGrafo.textContent='';
+      return true;
+    }catch(error){
+      estadoGrafo.textContent=error.message;
+      return false;
+    }finally{
+      ocupado=false;
+      botonesAlgoritmo.forEach(b=>b.disabled=false);
+      explicar.disabled=!ia || !recorrido || Boolean(recorrido.explicacion?.trim());
+    }
+  }
+
+  function mostrarPaso(indice){
+    const {pasos}=recorrido;
+    const paso=pasos[indice];
+    const visitados=new Set();
+    for(let i=0;i<=indice;i++){
+      const evento=pasos[i];
+      if(evento.tipo==='DESENCOLAR' || evento.tipo==='VISITAR') visitados.add(evento.vertice);
+    }
+    for(const [id,boton] of dibujo.botones){
+      boton.classList.toggle('visitado',visitados.has(id));
+      boton.classList.toggle('activo',paso.vertice===id);
+    }
+    const activo=dibujo.botones.get(paso.vertice);
+    if(activo && (activo.offsetLeft<visor.scrollLeft ||
+        activo.offsetLeft+activo.offsetWidth>visor.scrollLeft+visor.clientWidth)){
+      visor.scrollLeft=activo.offsetLeft-(visor.clientWidth-activo.offsetWidth)/2;
+    }
+    if(activo && (activo.offsetTop<visor.scrollTop ||
+        activo.offsetTop+activo.offsetHeight>visor.scrollTop+visor.clientHeight)){
+      visor.scrollTop=activo.offsetTop-(visor.clientHeight-activo.offsetHeight)/2;
+    }
+    rango.value=indice;
+    rango.setAttribute('aria-valuetext',`Paso ${indice+1} de ${pasos.length}`);
+    anterior.disabled=reiniciar.disabled=indice===0;
+    siguiente.disabled=indice===pasos.length-1;
+    buscar('traza-detalle').textContent=`Paso ${indice+1} de ${pasos.length} · ${paso.tipo}: ${paso.detalle}`;
+  }
+
+  async function explicarRecorrido(){
+    if(ocupado) return;
+    ocupado=true;
+    botonesAlgoritmo.forEach(b=>b.disabled=true);
+    explicar.disabled=true;
+    textoIA.textContent='Consultando a '+proveedor+'…';
+    try{
+      const datos=await solicitarRecorrido(recorrido.algoritmo,recorrido.origen,true);
+      if(JSON.stringify(recorrido.pasos)!==JSON.stringify(datos.pasos)){
+        textoIA.textContent='El grafo cambió. Vuelva a ejecutar el recorrido.';
+        return;
+      }
+      recorrido.explicacion=datos.explicacion;
+      textoIA.textContent=datos.explicacion?.trim()
+        ? datos.estadoIA+'\n\n'+datos.explicacion.trim()
+        : datos.estadoIA;
+    }catch(error){
+      textoIA.textContent=error.message;
+    }finally{
+      ocupado=false;
+      botonesAlgoritmo.forEach(b=>b.disabled=false);
+      explicar.disabled=Boolean(recorrido.explicacion?.trim());
+    }
+  }
+}
+
+function dibujarGrafo(lienzo,nodos,aristas,seleccionar,vertical=false){
+  const niveles=[...new Set(nodos.map(n=>n.nivel))].sort((a,b)=>a-b);
+  const anchoNodo=112, altoNodo=46, anchoColumna=186, altoFila=72;
+  const posiciones=new Map();
+  const botones=new Map();
+  let filas=0;
+  for(const [columna,nivel] of niveles.entries()){
+    const x=28+columna*anchoColumna;
+    const etiqueta=document.createElement('span');
+    etiqueta.className='nivel-grafo';
+    etiqueta.textContent='Nivel '+nivel;
+    etiqueta.style.cssText=vertical
+      ? `left:8px;top:${28+columna*100}px;width:68px`
+      : `left:${x}px;top:10px;width:${anchoNodo}px`;
+    lienzo.append(etiqueta);
+    const materias=nodos.filter(n=>n.nivel===nivel);
+    filas=Math.max(filas,materias.length);
+    for(const [fila,{codigo,nombre}] of materias.entries()){
+      const posicion=vertical ? {x:86+fila*145,y:16+columna*100} : {x,y:42+fila*altoFila};
+      posiciones.set(codigo,posicion);
+      const boton=document.createElement('button');
+      boton.type='button';
+      boton.className='nodo-grafo';
+      boton.textContent=codigo;
+      boton.title=nombre;
+      boton.setAttribute('aria-label',codigo+' · '+nombre);
+      boton.style.cssText=`left:${posicion.x}px;top:${posicion.y}px;width:${anchoNodo}px`;
+      boton.onclick=()=>seleccionar(codigo);
+      botones.set(codigo,boton);
+      lienzo.append(boton);
+    }
+  }
+  const ancho=vertical ? 86+filas*145 : niveles.length*anchoColumna;
+  const alto=vertical ? 16+niveles.length*100 : 42+filas*altoFila;
+  const {svg,flecha}=lienzoConFlechas(lienzo,ancho,alto);
+  const conexiones=aristas.map(([origen,destino])=>{
+    const a=posiciones.get(origen),b=posiciones.get(destino);
+    const origenEje=vertical?a.y:a.x,destinoEje=vertical?b.y:b.x;
+    const tamEje=vertical?altoNodo:anchoNodo;
+    const inicio=origenEje+(origenEje<=destinoEje?tamEje:0);
+    const fin=destinoEje+(origenEje>=destinoEje?tamEje+3:-3);
+    const centroA=vertical?a.x+anchoNodo/2:a.y+altoNodo/2;
+    const centroB=vertical?b.x+anchoNodo/2:b.y+altoNodo/2;
+    const control=origenEje===destinoEje ? fin+45 : (inicio+fin)/2;
+    const punto=(eje,centro)=>vertical?`${centro} ${eje}`:`${eje} ${centro}`;
+    const curva=`M${punto(inicio,centroA)} C${punto(control,centroA)},${punto(control,centroB)},${punto(fin,centroB)}`;
+    const linea=trazarFlecha(svg,flecha,curva);
+    return {origen,destino,linea};
+  });
+  return {botones,conexiones};
+}
+
+let siguienteFlecha=0;
+function lienzoConFlechas(lienzo,ancho,alto){
+  lienzo.style.width=ancho+'px';
+  lienzo.style.height=alto+'px';
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('width',ancho);
+  svg.setAttribute('height',alto);
+  svg.setAttribute('aria-hidden','true');
+  const flecha='flecha-'+(++siguienteFlecha);
+  svg.innerHTML=`<defs><marker id="${flecha}" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="currentColor"/></marker></defs>`;
+  lienzo.prepend(svg);
+  return {svg,flecha};
+}
+
+function trazarFlecha(svg,flecha,curva){
+  const linea=document.createElementNS(svg.namespaceURI,'path');
+  linea.setAttribute('d',curva);
+  linea.setAttribute('fill','none');
+  linea.setAttribute('stroke','currentColor');
+  linea.setAttribute('stroke-width','1.5');
+  linea.setAttribute('marker-end','url(#'+flecha+')');
+  svg.append(linea);
+  return linea;
+}
+
+const ETAPAS_ESTUDIO=[
+  {nombre:'Extracción',estado:'extraido',opcion:1,descripcion:'Lee los CSV del proyecto y encola sus registros.'},
+  {nombre:'Transformación',estado:'transformado',requiere:'extraido',opcion:3,descripcion:'Valida y normaliza los registros. Los válidos pasan a listas y los errores a la pila.'},
+  {nombre:'Carga',estado:'cargado',requiere:'transformado',opcion:6,descripcion:'Escribe los CSV limpios, los errores y el reporte ETL.'},
+  {nombre:'BST',estado:'bst',requiere:'transformado',opcion:10,descripcion:'Construye el árbol y elige la búsqueda que quedará en el flujograma.'},
+  {nombre:'Grafo',estado:'grafo',requiere:'transformado',opcion:18,descripcion:'Elige la dirección de lectura del grafo. Puedes construirlo aquí o al generar la documentación.'},
+  {nombre:'BFS',requiere:'grafo',descripcion:'Elige desde qué asignatura quieres recorrer el grafo por niveles.'},
+  {nombre:'DFS',requiere:'grafo',descripcion:'Elige desde qué asignatura quieres explorar en profundidad.'},
+  {nombre:'Documentación',descripcion:'Completa las etapas pendientes y reúne los flujogramas, el árbol, el grafo, las trazas y el reporte.'}
+];
+const estudioSesion={bfs:'',dfs:'',bst:'mayor',vertical:false,ia:false,mensajes:[]};
+
+function enviarEstudio(accion,campos){
+  return datosVisuales('/api/documentacion?accion='+accion,{
+    method:'POST',
+    headers:{'X-Requested-With':'SmartETL'},
+    body:new URLSearchParams(campos)
+  });
+}
+
+async function mostrarEstudio(){
+  let datos=await datosVisuales('/api/documentacion');
+  const sesion=estudioSesion;
+  const cont=$('resultado');
+  cont.innerHTML=`
+    <nav class="acciones estudio-pasos" aria-label="Etapas del chat guiado"></nav>
+    <div class="estudio">
+      <section class="estudio-panel" aria-labelledby="estudio-etapa">
+        <h3 id="estudio-etapa"></h3>
+        <p id="estudio-descripcion"></p>
+        <div id="estudio-controles"></div>
+        <div class="acciones">
+          <button type="button" id="estudio-ejecutar" class="principal"></button>
+          <button type="button" id="estudio-siguiente">Siguiente etapa</button>
+        </div>
+        <p id="estudio-estado" role="status" class="hint"></p>
+      </section>
+      <section class="estudio-panel" aria-labelledby="chat-titulo">
+        <h3 id="chat-titulo"></h3>
+        <div id="chat-mensajes" class="chat-mensajes" role="log" aria-label="Conversación" tabindex="0"></div>
+        <form class="chat-form">
+          <label for="chat-mensaje">Pregunta o decisión sobre esta etapa</label>
+          <textarea id="chat-mensaje" maxlength="1200" required></textarea>
+          <div class="acciones">
+            <button type="submit" class="principal">Enviar</button>
+            <button type="button" id="chat-recomendar">Revisar mi elección</button>
+          </div>
+        </form>
+        <p id="chat-estado" class="hint" role="status"></p>
+        <div id="chat-acciones" class="acciones" role="group" aria-label="Decisiones desde el chat"></div>
+      </section>
+    </div>
+    <section id="estudio-vista"></section>
+    <section class="documentacion-final" id="estudio-final" aria-label="Documentación generada" tabindex="-1" hidden></section>`;
+  const buscar=id=>cont.querySelector('#'+id);
+  const pasos=cont.querySelector('.estudio-pasos');
+  const controles=buscar('estudio-controles');
+  const ejecutar=buscar('estudio-ejecutar');
+  const siguiente=buscar('estudio-siguiente');
+  const vista=buscar('estudio-vista');
+  const final=buscar('estudio-final');
+  const entrada=buscar('chat-mensaje');
+  const mensajes=buscar('chat-mensajes');
+  const chatForm=cont.querySelector('.chat-form');
+  const status=buscar('estudio-estado');
+  const chatStatus=buscar('chat-estado');
+  const chatAcciones=buscar('chat-acciones');
+  const desdeGuia=!$('guia').hidden;
+  const primera=ETAPAS_ESTUDIO.findIndex(e=>e.estado && !datos[e.estado]);
+  let actual=desdeGuia || primera<0 ? ETAPAS_ESTUDIO.length-1 : primera;
+  let ocupado=false;
+  let resultadoFinal=null;
+  let recomendacionEtapa=-1;
+  const completadas=new Set();
+  const vistas=new Map();
+  const ultima=ETAPAS_ESTUDIO.length-1;
+  const botones=ETAPAS_ESTUDIO.map(({nombre},indice)=>{
+    const boton=document.createElement('button');
+    boton.type='button';
+    boton.textContent=(indice+1)+'. '+nombre;
+    boton.onclick=()=>seleccionar(indice);
+    pasos.append(boton);
+    return boton;
+  });
+  buscar('chat-titulo').textContent=datos.ia?'Chat con '+datos.proveedor:'Guía local';
+  if(!sesion.mensajes.length){
+    sesion.mensajes.push({autor:'Tutor',texto:'Selecciona una etapa y dime qué quieres mostrar. Puedo revisar tu elección antes de que ejecutes el paso.'});
+  }
+  sesion.mensajes.forEach(pintarMensaje);
+  chatForm.onsubmit=e=>{ e.preventDefault(); consultar(entrada.value.trim()); };
+  buscar('chat-recomendar').onclick=()=>consultar('¿Está bien mi elección para esta etapa? ¿Qué me recomiendas y por qué?');
+  ejecutar.onclick=ejecutarEtapa;
+  siguiente.onclick=()=>seleccionar(actual+1);
+  seleccionar(actual,false);
+
+  function configSelect(id,etiqueta,opciones,valor,cambio){
+    const bloque=document.createElement('div');
+    bloque.className='acciones';
+    const label=document.createElement('label');
+    label.htmlFor=id;
+    label.textContent=etiqueta;
+    const select=document.createElement('select');
+    select.id=id;
+    for(const [clave,nombre] of opciones) select.add(new Option(nombre,clave));
+    select.value=valor;
+    select.onchange=()=>cambio(select.value);
+    bloque.append(label,select);
+    controles.append(bloque);
+  }
+
+  function configOrigen(algoritmo){
+    const nombre=algoritmo.toLowerCase();
+    const opciones=[['','Primera asignatura disponible'],...datos.asignaturas.map(n=>[n.codigo,n.codigo+' · '+n.nombre])];
+    if(!opciones.some(([codigo])=>codigo===sesion[nombre])) sesion[nombre]='';
+    configSelect('estudio-'+nombre,'Origen de '+algoritmo,opciones,sesion[nombre],valor=>{
+      sesion[nombre]=valor;
+      completadas.delete(indiceDe(algoritmo));
+      vistas.delete(indiceDe(algoritmo));
+      vista.replaceChildren();
+      invalidarFinal();
+      actualizarPasos();
+    });
+  }
+
+  function indiceDe(nombre){ return ETAPAS_ESTUDIO.findIndex(e=>e.nombre===nombre); }
+
+  function invalidarFinal(){
+    resultadoFinal=null;
+    final.hidden=true;
+    final.replaceChildren();
+    completadas.delete(ultima);
+    actualizarPasos();
+  }
+
+  function actualizarPasos(){
+    botones.forEach((boton,i)=>{
+      const {nombre,estado}=ETAPAS_ESTUDIO[i];
+      boton.textContent=(datos[estado] || completadas.has(i)?'✓ ':'')+(i+1)+'. '+nombre;
+      if(i===actual) boton.setAttribute('aria-current','step');
+      else boton.removeAttribute('aria-current');
+    });
+  }
+
+  function seleccionar(indice,enfocar=true){
+    actual=indice;
+    const etapa=ETAPAS_ESTUDIO[actual];
+    buscar('estudio-etapa').textContent=etapa.nombre;
+    buscar('estudio-descripcion').textContent=etapa.descripcion;
+    controles.replaceChildren();
+    vista.replaceChildren();
+    status.textContent='';
+    if(actual===ultima) cont.append(final);
+    else final.remove();
+    final.hidden=actual!==ultima || !resultadoFinal;
+    if(etapa.nombre==='BST' || actual===ultima){
+      configSelect('estudio-bst','Búsqueda en el BST',[['mayor','Clave mayor'],['raiz','Raíz']],sesion.bst,v=>{
+        sesion.bst=v;
+        vistas.delete(indiceDe('BST'));
+        vista.replaceChildren();
+        invalidarFinal();
+      });
+    }
+    if(etapa.nombre==='Grafo' || actual===ultima){
+      configSelect('estudio-direccion','Dirección del grafo',[['horizontal','De izquierda a derecha'],['vertical','De arriba abajo']],sesion.vertical?'vertical':'horizontal',v=>{
+        sesion.vertical=v==='vertical';
+        for(const nombre of ['Grafo','BFS','DFS']) vistas.delete(indiceDe(nombre));
+        vista.replaceChildren();
+        invalidarFinal();
+        if(etapa.nombre==='Grafo' && datos.grafo) mostrarVistaGrafo().catch(error=>{status.textContent=error.message;});
+      });
+    }
+    if(etapa.nombre==='BFS' || actual===ultima) configOrigen('BFS');
+    if(etapa.nombre==='DFS' || actual===ultima) configOrigen('DFS');
+    if(actual===ultima){
+      const opciones=[['local','Redacción local']];
+      if(datos.ia) opciones.push(['ia','Redacción con '+datos.proveedor]);
+      configSelect('estudio-redaccion','Texto de la documentación',opciones,sesion.ia&&datos.ia?'ia':'local',v=>{
+        sesion.ia=v==='ia';
+        invalidarFinal();
+      });
+    }
+    siguiente.hidden=actual===ultima;
+    siguiente.textContent=datos[etapa.estado] || completadas.has(actual)?'Siguiente etapa':'Dejar para el final';
+    ejecutar.textContent=actual===ultima?'Generar documentación'
+      : etapa.nombre==='Grafo' && datos.grafo?'Ver el grafo'
+      : etapa.nombre==='BST' && datos.bst?'Ver la búsqueda'
+      : 'Ejecutar '+etapa.nombre;
+    ejecutar.disabled=Boolean(etapa.requiere && !datos[etapa.requiere]);
+    if(ejecutar.disabled){
+      status.textContent='Completa '+ETAPAS_ESTUDIO.find(p=>p.estado===etapa.requiere).nombre+' primero o genera todo desde Documentación.';
+    }
+    if(vistas.has(indice)) vista.append(vistas.get(indice));
+    actualizarPasos();
+    actualizarAccionesChat();
+    if(enfocar) botones[actual].focus();
+  }
+
+  function contexto(){
+    const etapa=ETAPAS_ESTUDIO[actual].nombre;
+    const opciones=[];
+    if(etapa==='BST' || actual===ultima) opciones.push('Búsqueda BST: '+(sesion.bst==='raiz'?'raíz':'clave mayor'));
+    if(etapa==='Grafo' || actual===ultima) opciones.push('Dirección: '+(sesion.vertical?'de arriba abajo':'de izquierda a derecha'));
+    if(etapa==='BFS' || actual===ultima) opciones.push('Origen BFS: '+(sesion.bfs || 'primera asignatura válida'));
+    if(etapa==='DFS' || actual===ultima) opciones.push('Origen DFS: '+(sesion.dfs || 'primera asignatura válida'));
+    if(actual===ultima) opciones.push('Redacción: '+(sesion.ia&&datos.ia?datos.proveedor:'local'));
+    else if(etapa==='Grafo') opciones.push('Puedo construir ahora o posponer hasta el paso final');
+    return opciones.join('. ') || 'Puedo ejecutar esta etapa ahora o dejarla para la generación final.';
+  }
+
+  function pintarMensaje({autor,texto}){
+    const linea=document.createElement('div');
+    linea.className='chat-mensaje'+(autor==='Tú'?' usuario':'');
+    const nombre=document.createElement('b');
+    nombre.textContent=autor;
+    linea.append(nombre,document.createTextNode(texto));
+    mensajes.append(linea);
+    mensajes.scrollTop=mensajes.scrollHeight;
+  }
+
+  function agregarMensaje(autor,texto){
+    const mensaje={autor,texto};
+    sesion.mensajes.push(mensaje);
+    pintarMensaje(mensaje);
+  }
+
+  function bloquear(valor){
+    ocupado=valor;
+    pasos.inert=controles.inert=chatForm.inert=chatAcciones.inert=siguiente.inert=ejecutar.inert=valor;
+    $('menu').inert=$('guia').inert=valor;
+  }
+
+  function actualizarAccionesChat(){
+    chatAcciones.replaceChildren();
+    if(recomendacionEtapa!==actual) return;
+    function accion(texto,alSeleccionar,deshabilitado=false){
+      const boton=document.createElement('button');
+      boton.type='button';
+      boton.textContent=texto;
+      boton.disabled=deshabilitado;
+      boton.onclick=alSeleccionar;
+      chatAcciones.append(boton);
+    }
+    if(ETAPAS_ESTUDIO[actual].nombre==='Grafo'){
+      accion(sesion.vertical?'Cambiar a horizontal':'Cambiar a vertical',()=>{
+        const direccion=buscar('estudio-direccion');
+        direccion.value=sesion.vertical?'horizontal':'vertical';
+        direccion.onchange();
+        actualizarAccionesChat();
+        chatAcciones.firstElementChild?.focus();
+      });
+    }
+    accion(actual===ultima?'Generar documentación desde el chat':'Ejecutar etapa desde el chat',ejecutarEtapa,ejecutar.disabled);
+    if(actual!==ultima){
+      const etapa=ETAPAS_ESTUDIO[actual];
+      accion(datos[etapa.estado] || completadas.has(actual)?'Continuar desde el chat':'Dejar esta etapa para el final',()=>seleccionar(actual+1));
+    }
+  }
+
+  async function consultar(mensaje){
+    if(!mensaje || ocupado) return;
+    const eleccion=contexto();
+    const historial=sesion.mensajes.slice(-8).map(m=>m.autor+': '+m.texto).join('\n').slice(-3000);
+    agregarMensaje('Tú',mensaje);
+    entrada.value='';
+    bloquear(true);
+    chatStatus.textContent=datos.ia?'Consultando a '+datos.proveedor+'…':'Preparando una recomendación local…';
+    try{
+      const paso=ETAPAS_ESTUDIO[actual].nombre;
+      const origen=['BFS','DFS'].includes(paso)?sesion[paso.toLowerCase()] || datos.asignaturas[0]?.codigo || '':'';
+      const respuesta=await enviarEstudio('chat',{paso,mensaje,eleccion,historial,origen});
+      agregarMensaje(respuesta.proveedor,respuesta.respuesta);
+      recomendacionEtapa=actual;
+      actualizarAccionesChat();
+      chatStatus.textContent=respuesta.aviso || (!datos.ia?'Configura GEMINI_API_KEY para conversar con Gemini.':'');
+    }catch(error){
+      chatStatus.textContent=error.message;
+    }finally{
+      bloquear(false);
+      entrada.focus({preventScroll:true});
+    }
+  }
+
+  async function ejecutarOpcion(opcion,cuerpo=''){
+    const r=await fetch('/api/ejecutar?opcion='+opcion,{method:'POST',body:cuerpo});
+    const texto=await r.text();
+    if(!r.ok || texto.includes('[ERROR]')) throw new Error(texto.trim() || 'No se pudo ejecutar el paso.');
+    return texto;
+  }
+
+  function crearVista(){
+    const panel=document.createElement('div');
+    vista.replaceChildren(panel);
+    vistas.set(actual,panel);
+    return panel;
+  }
+
+  async function mostrarVistaGrafo(algoritmo){
+    const panel=crearVista();
+    const origen=algoritmo ? sesion[algoritmo.toLowerCase()] || datos.asignaturas[0]?.codigo : '';
+    await mostrarGrafo(panel,{vertical:sesion.vertical,origen,algoritmo});
+  }
+
+  async function ejecutarEtapa(){
+    if(ocupado || ejecutar.disabled) return;
+    const etapa=ETAPAS_ESTUDIO[actual];
+    bloquear(true);
+    status.textContent=actual===ultima?'Generando la documentación y los diagramas…':'Ejecutando '+etapa.nombre+'…';
+    try{
+      if(actual===ultima){
+        const docs=await enviarEstudio('generar',{
+          bfs:sesion.bfs,dfs:sesion.dfs,bst:sesion.bst,ia:sesion.ia&&datos.ia?'1':'0'
+        });
+        datos=docs.estado;
+        await mostrarDocumentacion(final,docs,sesion.vertical);
+        resultadoFinal=docs;
+        final.hidden=false;
+        completadas.add(indiceDe('BFS'));
+        completadas.add(indiceDe('DFS'));
+      }else if(etapa.nombre==='BFS' || etapa.nombre==='DFS'){
+        await mostrarVistaGrafo(etapa.nombre);
+      }else if(etapa.nombre==='BST'){
+        if(!datos.bst) await ejecutarOpcion(etapa.opcion);
+        datos=await datosVisuales('/api/documentacion');
+        const bst=await enviarEstudio('bst',{modo:sesion.bst});
+        dibujarFlujograma(crearVista(),bst.codigo);
+      }else{
+        let texto='';
+        if(etapa.nombre!=='Grafo' || !datos.grafo) texto=await ejecutarOpcion(etapa.opcion);
+        datos=await datosVisuales('/api/documentacion');
+        if(!datos[etapa.estado]) throw new Error(texto.trim() || 'El paso todavía está pendiente.');
+        if(etapa.nombre==='Grafo'){
+          await mostrarVistaGrafo();
+        }else{
+          if(etapa.nombre==='Extracción'){
+            vistas.clear();
+            completadas.clear();
+            resultadoFinal=null;
+            final.hidden=true;
+          }
+          const salida=document.createElement('pre');
+          salida.textContent=texto.trim();
+          const panel=crearVista();
+          panel.append(salida);
+          const etl=await datosVisuales('/api/documentacion?accion=etl');
+          dibujarFlujograma(crearSeccionVisual(panel,'Flujograma ETL',true),etl.codigo);
+        }
+      }
+      completadas.add(actual);
+      seleccionar(actual,false);
+      status.textContent=actual===ultima?'Documentación lista. Los resultados visuales aparecen a continuación.':'Etapa completada.';
+      if(actual===ultima) final.focus();
+    }catch(error){
+      status.textContent=error.message;
+    }finally{
+      bloquear(false);
+      estado();
+    }
+  }
+}
+
+async function mostrarDocumentacion(cont,docs,vertical){
+  cont.replaceChildren();
+  const titulo=document.createElement('h3');
+  titulo.textContent='Documentación generada';
+  cont.append(titulo);
+  const grafo=crearSeccionVisual(cont,'Grafo de prerrequisitos y recorridos',true);
+  const ciclos=document.createElement('p');
+  ciclos.textContent='Ciclos detectados: '+docs.ciclos;
+  const visor=document.createElement('div');
+  grafo.append(ciclos,visor);
+  await mostrarGrafo(visor,{datos:docs.grafo,vertical,recorridos:{BFS:docs.bfs,DFS:docs.dfs}});
+
+  const grupo=document.createElement('div');
+  const controles=document.createElement('div');
+  controles.className='acciones';
+  const expandir=document.createElement('button');
+  expandir.type='button';
+  expandir.textContent='Expandir todos los diagramas';
+  controles.append(expandir);
+  const diagramas=docs.diagramas.map(({titulo,codigo})=>{
+    const seccion=crearSeccionVisual(grupo,titulo);
+    dibujarFlujograma(seccion,codigo);
+    return seccion;
+  });
+  expandir.onclick=()=>{
+    const abrir=diagramas.some(d=>!d.open);
+    diagramas.forEach(d=>{d.open=abrir;});
+    expandir.textContent=abrir?'Contraer todos los diagramas':'Expandir todos los diagramas';
+  };
+  for(const detalle of diagramas){
+    detalle.ontoggle=()=>{
+      expandir.textContent=diagramas.every(d=>d.open)?'Contraer todos los diagramas':'Expandir todos los diagramas';
+    };
+  }
+  cont.append(controles,grupo);
+  const texto=crearSeccionVisual(cont,'Documentación técnica');
+  const articulo=document.createElement('article');
+  pintarTextoDocumentacion(articulo,docs.texto);
+  texto.append(articulo);
+  const reporte=crearSeccionVisual(cont,'Reporte técnico');
+  const salida=document.createElement('pre');
+  salida.textContent=docs.reporte;
+  reporte.append(salida);
+}
+
+function crearSeccionVisual(cont,titulo,abierta=false){
+  const seccion=document.createElement('details');
+  seccion.open=abierta;
+  const resumen=document.createElement('summary');
+  resumen.textContent=titulo;
+  seccion.append(resumen);
+  cont.append(seccion);
+  return seccion;
+}
+
+function pintarTextoDocumentacion(cont,texto){
+  let codigo=false;
+  let lineas=[];
+  function volcar(){
+    if(!lineas.length) return;
+    const bloque=document.createElement(codigo?'pre':'p');
+    bloque.textContent=lineas.join('\n');
+    cont.append(bloque);
+    lineas=[];
+  }
+  for(const linea of texto.split('\n')){
+    if(linea.startsWith(CERCA)){
+      volcar();
+      codigo=!codigo;
+    }else if(!codigo && /^#{1,6} /.test(linea)){
+      volcar();
+      const h=document.createElement('h4');
+      h.textContent=linea.replace(/^#+ /,'');
+      cont.append(h);
+    }else if(!codigo && !linea.trim()){
+      volcar();
+    }else{
+      lineas.push(linea);
+    }
+  }
+  volcar();
+}
+
+// Los diagramas de la documentación usan la sintaxis Mermaid que genera Java.
+function leerFlujograma(codigo){
+  const nodos=new Map();
+  const aristas=[];
+  const nodo=/^([A-Za-z0-9_]+)(?:\(\"([^\"]*)\"\)|\(\[\"([^\"]*)\"\]\)|\{\"([^\"]*)\"\}|\[\s*\"([^\"]*)\"\s*\]|\[([^\]]*)\])?$/;
+  function leerNodo(texto){
+    const partes=texto.trim().match(nodo);
+    if(!partes) return null;
+    const [_,id,redondo,terminal,decision,proceso,sinComillas]=partes;
+    const etiqueta=terminal ?? decision ?? proceso ?? redondo ?? sinComillas;
+    if(etiqueta!==undefined || !nodos.has(id)){
+      nodos.set(id,{etiqueta:(etiqueta ?? id).replace(/<br\s*\/?>/gi,'\n'),
+        tipo:terminal!==undefined?'terminal':decision!==undefined?'decision':'proceso'});
+    }
+    return id;
+  }
+  for(const renglon of codigo.trim().split(/\r?\n/).slice(1)){
+    const linea=renglon.trim();
+    if(!linea) continue;
+    const enlace=linea.match(/^(.*?)\s*-->\s*(?:\|([^|]*)\|\s*)?(.*)$/);
+    if(!enlace){
+      if(!leerNodo(linea)) return null;
+      continue;
+    }
+    const origen=leerNodo(enlace[1]);
+    const destino=leerNodo(enlace[3]);
+    if(!origen || !destino) return null;
+    const etiqueta=(enlace[2] || '').replace(/^\"|\"$/g,'');
+    aristas.push({origen,destino,etiqueta});
+  }
+  return nodos.size ? {nodos,aristas} : null;
+}
+
+function dibujarFlujograma(cont,codigo){
+  const flujo=leerFlujograma(codigo);
+  if(!flujo){
+    const p=document.createElement('pre');
+    p.textContent=codigo;
+    cont.append(p);
+    return;
+  }
+  const {nodos,aristas}=flujo;
+  const salidas=new Map([...nodos.keys()].map(id=>[id,[]]));
+  for(const {origen,destino} of aristas) salidas.get(origen).push(destino);
+  const niveles=new Map();
+  for(const raiz of nodos.keys()){
+    if(niveles.has(raiz)) continue;
+    niveles.set(raiz,0);
+    const pendientes=[raiz];
+    for(const actual of pendientes){
+      for(const destino of salidas.get(actual)){
+        if(niveles.has(destino)) continue;
+        niveles.set(destino,niveles.get(actual)+1);
+        pendientes.push(destino);
+      }
+    }
+  }
+  const filas=[];
+  for(const [id,nivel] of niveles) (filas[nivel] ??= []).push(id);
+  const anchoNodo=205;
+  const separacion=112;
+  const margen=58;
+  const ancho=2*margen-separacion+Math.max(...filas.map(f=>f.length))*(anchoNodo+separacion);
+  const visor=document.createElement('div');
+  visor.className='grafo-visor flujo-visor';
+  visor.tabIndex=0;
+  visor.setAttribute('role','region');
+  visor.setAttribute('aria-label','Diagrama desplazable');
+  const lienzo=document.createElement('div');
+  lienzo.className='grafo-lienzo';
+  visor.append(lienzo);
+  cont.append(visor);
+  const posiciones=new Map();
+  const botones=new Map();
+  let y=22;
+  for(const fila of filas){
+    const alto=Math.max(48,...fila.map(id=>{
+      const {etiqueta}=nodos.get(id);
+      return 14+etiqueta.split('\n').reduce((total,linea)=>total+Math.max(1,Math.ceil(linea.length/25))*20,0);
+    }));
+    const inicio=(ancho-(fila.length*anchoNodo+(fila.length-1)*separacion))/2;
+    fila.forEach((id,i)=>{
+      const x=inicio+i*(anchoNodo+separacion);
+      posiciones.set(id,{x,y,alto});
+      const boton=document.createElement('button');
+      boton.type='button';
+      boton.className='flujo-nodo';
+      boton.dataset.tipo=nodos.get(id).tipo;
+      boton.setAttribute('aria-pressed','false');
+      boton.style.cssText=`left:${x}px;top:${y}px;width:${anchoNodo}px;height:${alto}px;white-space:pre-line;overflow-wrap:anywhere`;
+      boton.textContent=nodos.get(id).etiqueta;
+      botones.set(id,boton);
+      lienzo.append(boton);
+    });
+    y+=alto+57;
+  }
+  const {svg,flecha}=lienzoConFlechas(lienzo,ancho,y-29);
+  const dibujadas=aristas.map(({origen,destino,etiqueta},i)=>{
+    const a=posiciones.get(origen),b=posiciones.get(destino);
+    let x=(a.x+b.x+anchoNodo)/2;
+    let yy=(a.y+a.alto+b.y)/2;
+    let curva;
+    if(a.y<b.y){
+      const ax=a.x+anchoNodo/2,bx=b.x+anchoNodo/2;
+      curva=`M${ax} ${a.y+a.alto} C${ax} ${yy},${bx} ${yy},${bx} ${b.y-3}`;
+    }else{
+      x=Math.min(a.x,b.x)-19-(i%4)*8;
+      const ay=a.y+a.alto/2,by=b.y+b.alto/2;
+      yy=(ay+by)/2;
+      curva=`M${a.x} ${ay} C${x} ${ay},${x} ${ay},${x} ${yy} S${x} ${by},${b.x-3} ${by}`;
+    }
+    const linea=trazarFlecha(svg,flecha,curva);
+    if(etiqueta){
+      const texto=document.createElementNS(svg.namespaceURI,'text');
+      texto.setAttribute('x',x);
+      texto.setAttribute('y',yy-3);
+      texto.setAttribute('text-anchor','middle');
+      texto.setAttribute('class','flujo-enlace');
+      texto.textContent=etiqueta;
+      svg.append(texto);
+    }
+    return {origen,destino,linea};
+  });
+  let elegido=null;
+  for(const [id,boton] of botones){
+    boton.onclick=()=>{
+      elegido=elegido===id?null:id;
+      for(const [otro,control] of botones) control.setAttribute('aria-pressed',String(otro===elegido));
+      for(const {origen,destino,linea} of dibujadas){
+        linea.classList.toggle('relacion',origen===elegido || destino===elegido);
+      }
+    };
+  }
+}
+
+const CERCA='`'+'`'+'`';
+function partir(texto){
+  const seg=[];let txt=[],diag=null,cercado=false;
+  const volcar=()=>{const t=txt.join('\n').trim();if(t)seg.push({t:'txt',v:t});txt=[];};
+  for(const l of texto.replace(/\r/g,'').split('\n')){
+    if(diag){
+      if(cercado){
+        if(l.trim().startsWith(CERCA)){seg.push({t:'diag',v:diag.join('\n')});diag=null;}
+        else diag.push(l);
+        continue;
+      }
+      if(/^\s+\S/.test(l)){diag.push(l);continue;}
+      seg.push({t:'diag',v:diag.join('\n')});diag=null;
+    }
+    if(l.trim().startsWith(CERCA+'mermaid')){volcar();diag=[];cercado=true;continue;}
+    if(/^(flowchart|graph)\s/.test(l)){volcar();diag=[l];cercado=false;continue;}
+    if(l.startsWith('=== ')){volcar();seg.push({t:'tit',v:l.replace(/=/g,'').trim()});continue;}
+    txt.push(l);
+  }
+  if(diag)seg.push({t:'diag',v:diag.join('\n')});
+  volcar();
+  return seg;
 }
 
 async function mostrar(texto){
-  const lineas=texto.split('\n');
-  let diag=[],resto=[],dentro=false;
-  for(const l of lineas){
-    if(!dentro && /^(flowchart|graph)\s/.test(l)){dentro=true;diag.push(l);continue;}
-    if(dentro){ if(/^\s+\S/.test(l)){diag.push(l);continue;} dentro=false; }
-    resto.push(l);
-  }
-  const s=$('salida');s.hidden=false;
-  s.textContent=resto.join('\n').trim()||'(sin salida)';
-  $('diag').innerHTML='';
-  if(diag.length){
-    try{
-      await cargarMermaid();
-      const {svg}=await mermaid.render('g'+Date.now(),diag.join('\n'));
-      $('diag').innerHTML=svg;
-    }catch(_){
-      s.textContent=texto; // sin internet o error: se muestra el código Mermaid como texto
+  const cont=$('resultado');cont.innerHTML='';
+  const segs=partir(texto);
+  if(!segs.length)segs.push({t:'txt',v:'(sin salida)'});
+  for(const s of segs){
+    if(s.t==='tit'){const h=document.createElement('h3');h.textContent=s.v;cont.appendChild(h);}
+    else if(s.t==='txt'){const p=document.createElement('pre');p.textContent=s.v;cont.appendChild(p);}
+    else{
+      const d=document.createElement('div');d.className='diag';cont.appendChild(d);
+      try{
+        await cargarMermaid();
+        const {svg}=await mermaid.render('g'+Date.now()+Math.random().toString(36).slice(2),s.v);
+        d.innerHTML=svg;
+      }catch(_){
+        const p=document.createElement('pre');p.textContent=s.v;d.replaceWith(p); // sin internet: se muestra el código
+      }
     }
   }
 }

@@ -1,19 +1,24 @@
 package estructuras;
 
 /**
- * Vértice de un grafo dirigido. Guarda su lista de adyacencia (a quién apunta)
- * y campos auxiliares que usan BFS y DFS (marcas, padre y nivel).
+ * Vertice de un grafo dirigido.
+ * Guarda sus adyacentes y campos auxiliares para BFS y DFS.
  */
 public class Vertice<T> {
+
     public T dato;
-    /** Lista de adyacencia: vértices a los que este vértice apunta. */
+
     public ListaEnlazada<Vertice<T>> adyacentes = new ListaEnlazada<>();
 
-    // --- campos auxiliares de los recorridos ---
     public boolean visitado;
     public Vertice<T> padre;
     public int nivel;
-    /** 0 = no visitado (blanco), 1 = en proceso (gris), 2 = terminado (negro). Para ciclos. */
+
+    /**
+     * 0 = no visitado
+     * 1 = en proceso
+     * 2 = terminado
+     */
     public int estado;
 
     public Vertice(T dato) {

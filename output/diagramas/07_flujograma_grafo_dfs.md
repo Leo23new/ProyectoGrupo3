@@ -1,32 +1,25 @@
 # Flujograma: Grafo + DFS
 
-**Origen:** Generado con IA (gemini-3.5-flash-lite) a partir de datos reales de la ejecución
+**Origen:** Generador local
 
 ```mermaid
 flowchart TD
-    Inicio(["INICIO: DFS desde SIS101"]) --> Apilar1["APILAR: SIS101"]
-    Apilar1 --> Visitar1["VISITAR: SIS101"]
-    Visitar1 --> Apilar2["APILAR: SIS102"]
-    Apilar2 --> Visitar2["VISITAR: SIS102"]
-    Visitar2 --> Apilar3["APILAR: SIS302"]
-    Apilar3 --> Apilar4["APILAR: SIS201"]
-    Apilar4 --> Visitar4["VISITAR: SIS201"]
-    Visitar4 --> Apilar5["APILAR: SIS203"]
-    Apilar5 --> Apilar6["APILAR: SIS202"]
-    Apilar6 --> Visitar6["VISITAR: SIS202"]
-    Visitar6 --> Apilar7["APILAR: SIS301"]
-    Apilar7 --> Visitar7["VISITAR: SIS301"]
-    Visitar7 --> Visitar5["VISITAR: SIS203"]
-    Visitar5 --> Apilar8["APILAR: SIS303"]
-    Apilar8 --> Visitar8["VISITAR: SIS303"]
-    Visitar8 --> Visitar3["VISITAR: SIS302"]
-    Visitar3 --> Fin(["FIN: pila vacia; vertices visitados: 8"])
+    N0(["Inicio: DFS desde SIS101<br/>Apilar SIS101<br/>pila=(cima: SIS101)"])
+    N0 -->|"¿pila vacía? No"| N1["Desapilar y visitar SIS101<br/>Apilar SIS102<br/>pila=(cima: SIS102)"]
+    N1 -->|"¿pila vacía? No"| N2["Desapilar y visitar SIS102<br/>Apilar SIS302, SIS201<br/>pila=(cima: SIS201 / SIS302)"]
+    N2 -->|"¿pila vacía? No"| N3["Desapilar y visitar SIS201<br/>Apilar SIS203, SIS202<br/>pila=(cima: SIS202 / SIS203 / SIS302)"]
+    N3 -->|"¿pila vacía? No"| N4["Desapilar y visitar SIS202<br/>Apilar SIS301<br/>pila=(cima: SIS301 / SIS203 / SIS302)"]
+    N4 -->|"¿pila vacía? No"| N5["Desapilar y visitar SIS301<br/>pila=(cima: SIS203 / SIS302)"]
+    N5 -->|"¿pila vacía? No"| N6["Desapilar y visitar SIS203<br/>Apilar SIS303<br/>pila=(cima: SIS303 / SIS302)"]
+    N6 -->|"¿pila vacía? No"| N7["Desapilar y visitar SIS303<br/>pila=(cima: SIS302)"]
+    N7 -->|"¿pila vacía? No"| N8["Desapilar y visitar SIS302<br/>pila=(cima: )"]
+    N8 -->|"¿pila vacía? Sí"| N9(["Fin: pila vacía; vértices visitados: 8"])
 ```
 
 ## Descripción estructurada enviada a la IA
 
 ```text
-Recorrido DFS real sobre el grafo de prerrequisitos usando una pila. Eventos registrados en orden (con el contenido de la pila tras cada paso):
+Recorrido DFS sobre el grafo de prerrequisitos usando una pila. Eventos registrados en orden:
 INICIO: DFS desde SIS101
 APILAR: SIS101 | pila=[cima: SIS101]
 VISITAR: SIS101 | pila=[cima: ]

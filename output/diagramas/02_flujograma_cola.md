@@ -1,6 +1,6 @@
 # Flujograma: Cola (encolar y desencolar)
 
-**Origen:** Generador local (estructura fija: la IA se reserva para los flujogramas con datos reales)
+**Origen:** Generador local
 
 ```mermaid
 flowchart TD
@@ -17,12 +17,13 @@ flowchart TD
     J --> K["frente = frente.siguiente"]
     K --> L{"¿frente es null?"}
     L -->|"Sí"| M["fin = null"]
-    L -->|"No"| N["tamaño = tamaño - 1"]
-    M --> N
-    N --> O["Devolver el dato guardado"]
+    L -->|"No"| N["Mantener fin"]
+    M --> O["tamaño = tamaño - 1"]
+    N --> O
+    O --> P["Devolver el dato guardado"]
     G --> Z(["Fin"])
     I --> Z
-    O --> Z
+    P --> Z
 ```
 
 ## Descripción estructurada enviada a la IA
