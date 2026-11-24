@@ -1,9 +1,6 @@
 # Flujograma: Lista enlazada (insertar y buscar)
 
-**Origen:** Generador local (sin IA): Error HTTP 429: {
-  "error": {
-    "code": 429,
-    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceede
+**Origen:** Generador local
 
 ```mermaid
 flowchart TD
@@ -31,5 +28,5 @@ flowchart TD
 ```text
 Lista enlazada simple con referencias cabeza y cola.
 insertar(x): crear nodo; si la lista esta vacia cabeza y cola apuntan al nodo; si no cola.siguiente = nodo y cola = nodo.
-buscar(criterio): actual = cabeza; mientras actual no sea null: si cumple el criterio devolver el dato; avanzar actual = actual.siguiente; al terminar devolver null.
+buscar(criterio): recorrer desde cabeza; si cumple devolver dato; al terminar devolver null.
 ```

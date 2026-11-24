@@ -1,21 +1,24 @@
 package estructuras;
 
 /**
- * Grafo dirigido representado con LISTA DE VÉRTICES y, dentro de cada vértice,
- * LISTA DE ADYACENCIA (ambas son ListaEnlazada propias).
+ * Grafo dirigido representado mediante lista de vertices
+ * y listas de adyacencia.
  *
- * Arista origen -> destino significa "origen es prerrequisito de destino".
+ * Arista origen -> destino significa que origen es
+ * prerrequisito de destino.
  */
 public class Grafo<T> {
+
     private final ListaEnlazada<Vertice<T>> vertices = new ListaEnlazada<>();
     private int numAristas;
 
-    /** Agrega un vértice si no existe. Devuelve el vértice (nuevo o existente). */
     public Vertice<T> agregarVertice(T dato) {
         Vertice<T> existente = buscarVertice(dato);
+
         if (existente != null) {
             return existente;
         }
+
         Vertice<T> nuevo = new Vertice<>(dato);
         vertices.insertar(nuevo);
         return nuevo;
@@ -23,37 +26,40 @@ public class Grafo<T> {
 
     public Vertice<T> buscarVertice(T dato) {
         for (Vertice<T> v : vertices) {
-            if (v.dato.equals(dato)) {
+            if (v.dato == null ? dato == null : v.dato.equals(dato)) {
                 return v;
             }
         }
         return null;
     }
 
-    /** Agrega arista dirigida. Devuelve false si falta algún vértice o la arista ya existía. */
     public boolean agregarArista(T origen, T destino) {
         Vertice<T> vo = buscarVertice(origen);
         Vertice<T> vd = buscarVertice(destino);
+
         if (vo == null || vd == null) {
             return false;
         }
+
         for (Vertice<T> ady : vo.adyacentes) {
             if (ady == vd) {
                 return false;
             }
         }
+
         vo.adyacentes.insertar(vd);
         numAristas++;
         return true;
     }
 
-    /** Vértices que tienen una arista hacia "dato" (prerrequisitos directos). */
     public ListaEnlazada<T> predecesores(T dato) {
         ListaEnlazada<T> resultado = new ListaEnlazada<>();
         Vertice<T> destino = buscarVertice(dato);
+
         if (destino == null) {
             return resultado;
         }
+
         for (Vertice<T> v : vertices) {
             for (Vertice<T> ady : v.adyacentes) {
                 if (ady == destino) {
@@ -61,10 +67,10 @@ public class Grafo<T> {
                 }
             }
         }
+
         return resultado;
     }
 
-    /** Restablece las marcas de los recorridos antes de ejecutar BFS/DFS. */
     public void reiniciarMarcas() {
         for (Vertice<T> v : vertices) {
             v.visitado = false;
@@ -90,39 +96,95 @@ public class Grafo<T> {
         return vertices.estaVacia();
     }
 
-    /** Descripción de la lista de adyacencia (estado real del grafo). */
     public String describir() {
         StringBuilder sb = new StringBuilder();
+
         for (Vertice<T> v : vertices) {
             sb.append(v.dato).append(" -> ");
+
             if (v.adyacentes.estaVacia()) {
                 sb.append("(ninguno)");
             } else {
                 boolean primero = true;
+
                 for (Vertice<T> ady : v.adyacentes) {
                     if (!primero) {
                         sb.append(", ");
                     }
+
                     sb.append(ady.dato);
                     primero = false;
                 }
             }
+
             sb.append("\n");
         }
+
         return sb.toString();
     }
 
-    /** Exporta el grafo como diagrama Mermaid (flowchart LR). */
+    /**
+     * Exporta el grafo como Mermaid.
+     * Se utilizan identificadores internos para evitar problemas
+     * con códigos, espacios o caracteres especiales.
+     */
     public String aMermaid() {
         StringBuilder sb = new StringBuilder("flowchart LR\n");
+
+        int indice = 0;
+
         for (Vertice<T> v : vertices) {
-            sb.append("    ").append(v.dato).append("[\"").append(v.dato).append("\"]\n");
+            sb.append("    V")
+              .append(indice)
+              .append("[\"")
+              .append(escaparMermaid(v.dato))
+              .append("\"]\n");
+
+            indice++;
         }
-        for (Vertice<T> v : vertices) {
-            for (Vertice<T> ady : v.adyacentes) {
-                sb.append("    ").append(v.dato).append(" --> ").append(ady.dato).append("\n");
+
+        for (int i = 0; i < vertices.tamanio(); i++) {
+            Vertice<T> origen = vertices.obtener(i);
+
+            for (Vertice<T> ady : origen.adyacentes) {
+                int destino = indiceVertice(ady);
+
+                if (destino >= 0) {
+                    sb.append("    V")
+                      .append(i)
+                      .append(" --> V")
+                      .append(destino)
+                      .append("\n");
+                }
             }
         }
+
         return sb.toString();
+    }
+
+    private int indiceVertice(Vertice<T> buscado) {
+        for (int i = 0; i < vertices.tamanio(); i++) {
+            if (vertices.obtener(i) == buscado) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private String escaparMermaid(T dato) {
+        if (dato == null) {
+            return "";
+        }
+
+        return String.valueOf(dato)
+                .replace("\"", "'")
+                .replace("[", "(")
+                .replace("]", ")")
+                .replace("|", " ")
+                .replace("\n", " ")
+                .replace("\r", " ")
+                .replace("<", "")
+                .replace(">", "");
     }
 }

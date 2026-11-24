@@ -1,9 +1,6 @@
 # Flujograma: Cola (encolar y desencolar)
 
-**Origen:** Generador local (sin IA): Error HTTP 429: {
-  "error": {
-    "code": 429,
-    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceede
+**Origen:** Generador local
 
 ```mermaid
 flowchart TD
@@ -20,12 +17,13 @@ flowchart TD
     J --> K["frente = frente.siguiente"]
     K --> L{"¿frente es null?"}
     L -->|"Sí"| M["fin = null"]
-    L -->|"No"| N["tamaño = tamaño - 1"]
-    M --> N
-    N --> O["Devolver el dato guardado"]
+    L -->|"No"| N["Mantener fin"]
+    M --> O["tamaño = tamaño - 1"]
+    N --> O
+    O --> P["Devolver el dato guardado"]
     G --> Z(["Fin"])
     I --> Z
-    O --> Z
+    P --> Z
 ```
 
 ## Descripción estructurada enviada a la IA

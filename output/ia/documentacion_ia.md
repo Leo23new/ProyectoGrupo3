@@ -1,15 +1,20 @@
 # Documentación del sistema
 
-**Origen:** Documentación local (sin IA): Error HTTP 429: {
-  "error": {
-    "code": 429,
-    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceede
+**Origen:** Documentación local
 
 ## Propósito
 
-SmartETL-DS + IA extrae datos académicos desde CSV, los valida, los carga limpios y los organiza con estructuras de datos propias para consultarlos.
+SmartETL-DS procesa y consulta datos académicos.
 
-## Resumen de la ejecución
+## Flujo de datos
+
+La extracción lee los CSV y encola los registros. La transformación valida y normaliza, y la carga escribe los datos limpios y los errores.
+
+## Estructuras utilizadas
+
+La cola conserva el orden de llegada, la pila reúne los errores y las listas enlazadas guardan los registros válidos. El BST indexa estudiantes por clave. El grafo dirigido representa prerrequisitos y se recorre con BFS (cola) o DFS (pila).
+
+## Resultados de la ejecución
 
 ```text
 Registros procesados: 109 | válidos: 81 | inválidos: 28
@@ -30,6 +35,8 @@ Errores en estudiantes.csv: 12 de 34
 Errores en asignaturas.csv: 5 de 17
 Errores en matriculas.csv: 7 de 41
 Errores en prerrequisitos.csv: 4 de 17
+Origen del recorrido BFS: MAT101
+Origen del recorrido DFS: SIS101
 
 ```
 

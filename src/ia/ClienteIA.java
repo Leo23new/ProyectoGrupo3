@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Cliente mínimo de IA generativa usando solo java.net.http (Java 11+).
  * Proveedores soportados (se elige por la variable de entorno que exista, en este orden):
- *   1) GEMINI_API_KEY    -> Google Gemini (tiene nivel gratuito). Modelo: GEMINI_MODEL (por defecto gemini-3.8-flash)
+ *   1) GEMINI_API_KEY    -> Google Gemini (tiene nivel gratuito). Modelo: GEMINI_MODEL (por defecto gemini-3.5-flash-lite)
  *   2) ANTHROPIC_API_KEY -> Claude (Anthropic Messages API). Modelo: CLAUDE_MODEL (por defecto claude-sonnet-5-5)
  *   3) ninguna           -> el sistema funciona en modo local (generador propio, sin IA)
  * La clave NUNCA se escribe en el código ni se sube a GitHub.
@@ -33,12 +33,28 @@ public class ClienteIA {
     private static final String URL_GEMINI = "https://generativelanguage.googleapis.com/v1beta/models/";
     private static final String CARPETA_EVIDENCIA = "output/evidencias_ia";
     private static final int REINTENTOS = 3;
+    private static final long PAUSA_MS = leerPausa();
 
     private final String proveedor;   // "Gemini", "Claude" o "local"
     private final String apiKey;
     private final String modelo;
-        private String ultimoEstado = "";
+    private String ultimoEstado = "";
     private long ultimaLlamada = 0;
+
+    private static long leerPausa() {
+    String p = System.getenv("GEMINI_PAUSA_MS");
+
+    try {
+        long pausa = (p == null || p.isBlank())
+                ? 6000
+                : Long.parseLong(p.trim());
+
+        return Math.max(0, pausa);
+
+    } catch (NumberFormatException e) {
+        return 6000;
+    }
+}
 
     public ClienteIA() {
         String g = System.getenv("GEMINI_API_KEY");
@@ -47,7 +63,7 @@ public class ClienteIA {
             proveedor = "Gemini";
             apiKey = g.trim();
             String m = System.getenv("GEMINI_MODEL");
-            modelo = (m == null || m.isBlank()) ? "gemini-3.8-flash" : m.trim();
+            modelo = (m == null || m.isBlank()) ? "gemini-3.5-flash-lite" : m.trim();
         } else if (c != null && !c.isBlank()) {
             proveedor = "Claude";
             apiKey = c.trim();
@@ -86,8 +102,8 @@ public class ClienteIA {
             ultimoEstado = "Sin GEMINI_API_KEY ni ANTHROPIC_API_KEY: se usó el generador local (sin IA)";
         } else {
             try {
-                                if (proveedor.equals("Gemini")) {
-                    long espera = 6000 - (System.currentTimeMillis() - ultimaLlamada);
+                if (proveedor.equals("Gemini")) {
+                    long espera = PAUSA_MS - (System.currentTimeMillis() - ultimaLlamada);
                     if (espera > 0) {
                         Thread.sleep(espera);
                     }
@@ -205,69 +221,237 @@ public class ClienteIA {
     }
 
     /** Extrae el primer campo "text" de la respuesta JSON y lo des-escapa. */
-    static String extraerTexto(String json) {
-        String clave = "\"text\":\"";
-        int inicio = json.indexOf(clave);
-        if (inicio < 0) {
-            clave = "\"text\": \"";
-            inicio = json.indexOf(clave);
-            if (inicio < 0) {
-                return null;
-            }
-        }
-        inicio += clave.length();
-        StringBuilder sb = new StringBuilder();
-        for (int i = inicio; i < json.length(); i++) {
-            char c = json.charAt(i);
-            if (c == '"') {
-                return sb.toString();
-            }
-            if (c == '\\' && i + 1 < json.length()) {
-                char n = json.charAt(++i);
-                switch (n) {
-                    case 'n': sb.append('\n'); break;
-                    case 't': sb.append('\t'); break;
-                    case 'r': sb.append('\r'); break;
-                    case 'b': sb.append('\b'); break;
-                    case 'f': sb.append('\f'); break;
-                    case 'u':
-                        if (i + 4 < json.length()) {
-                            sb.append((char) Integer.parseInt(json.substring(i + 1, i + 5), 16));
-                            i += 4;
-                        }
-                        break;
-                    default: sb.append(n);
-                }
-            } else {
-                sb.append(c);
-            }
-        }
+    /**
+ * Extrae el primer campo "text" de una respuesta JSON.
+ * Decodifica correctamente comillas, barras y caracteres escapados.
+ */
+static String extraerTexto(String json) {
+
+    if (json == null || json.isBlank()) {
         return null;
     }
 
-    /** Gemini puede devolver el texto en varias partes: se concatenan todas. */
-    static String extraerTextoGemini(String json) {
-        StringBuilder total = new StringBuilder();
-        int pos = json.indexOf("\"parts\"");
-        if (pos < 0) {
+    int clave = json.indexOf("\"text\"");
+    if (clave < 0) {
+        return null;
+    }
+
+    int dosPuntos = json.indexOf(':', clave + 6);
+    if (dosPuntos < 0) {
+        return null;
+    }
+
+    int inicio = dosPuntos + 1;
+
+    while (inicio < json.length()
+            && Character.isWhitespace(json.charAt(inicio))) {
+        inicio++;
+    }
+
+    if (inicio >= json.length() || json.charAt(inicio) != '"') {
+        return null;
+    }
+
+    return decodificarCadenaJson(json, inicio);
+}
+
+/**
+ * Extrae y concatena los textos de las diferentes partes de Gemini.
+ */
+static String extraerTextoGemini(String json) {
+
+    if (json == null || json.isBlank()) {
+        return null;
+    }
+
+    int pos = json.indexOf("\"parts\"");
+    if (pos < 0) {
+        return null;
+    }
+
+    StringBuilder total = new StringBuilder();
+
+    while (pos < json.length()) {
+
+        int clave = json.indexOf("\"text\"", pos);
+
+        if (clave < 0) {
+            break;
+        }
+
+        int dosPuntos = json.indexOf(':', clave + 6);
+
+        if (dosPuntos < 0) {
+            break;
+        }
+
+        int inicio = dosPuntos + 1;
+
+        while (inicio < json.length()
+                && Character.isWhitespace(json.charAt(inicio))) {
+            inicio++;
+        }
+
+        if (inicio >= json.length()
+                || json.charAt(inicio) != '"') {
+
+            pos = dosPuntos + 1;
+            continue;
+        }
+
+        String parte = decodificarCadenaJson(json, inicio);
+
+        if (parte == null) {
+            break;
+        }
+
+        if (!parte.isEmpty()) {
+            if (total.length() > 0) {
+                total.append("\n");
+            }
+
+            total.append(parte);
+        }
+
+        // Avanza hasta después de la cadena JSON original,
+        // no usando la longitud del texto ya decodificado.
+        int fin = finCadenaJson(json, inicio);
+
+        if (fin <= inicio) {
+            break;
+        }
+
+        pos = fin;
+    }
+
+    return total.length() == 0 ? null : total.toString();
+}
+
+/**
+ * Decodifica una cadena JSON que comienza en la posición de la comilla.
+ */
+private static String decodificarCadenaJson(
+        String json,
+        int inicio) {
+
+    if (json == null
+            || inicio < 0
+            || inicio >= json.length()
+            || json.charAt(inicio) != '"') {
+        return null;
+    }
+
+    StringBuilder resultado = new StringBuilder();
+
+    for (int i = inicio + 1; i < json.length(); i++) {
+
+        char c = json.charAt(i);
+
+        if (c == '"') {
+            return resultado.toString();
+        }
+
+        if (c != '\\') {
+            resultado.append(c);
+            continue;
+        }
+
+        if (i + 1 >= json.length()) {
             return null;
         }
-        while (true) {
-            int k = json.indexOf("\"text\"", pos);
-            if (k < 0) {
+
+        char escape = json.charAt(++i);
+
+        switch (escape) {
+
+            case '"':
+                resultado.append('"');
                 break;
-            }
-            int comillas = json.indexOf('"', json.indexOf(':', k + 6) + 1);
-            if (comillas < 0) {
+
+            case '\\':
+                resultado.append('\\');
                 break;
-            }
-            String parte = extraerTexto("\"text\":\"" + json.substring(comillas + 1));
-            if (parte == null) {
+
+            case '/':
+                resultado.append('/');
                 break;
-            }
-            total.append(parte);
-            pos = comillas + 1 + parte.length();
+
+            case 'b':
+                resultado.append('\b');
+                break;
+
+            case 'f':
+                resultado.append('\f');
+                break;
+
+            case 'n':
+                resultado.append('\n');
+                break;
+
+            case 'r':
+                resultado.append('\r');
+                break;
+
+            case 't':
+                resultado.append('\t');
+                break;
+
+            case 'u':
+
+                if (i + 4 >= json.length()) {
+                    return null;
+                }
+
+                try {
+                    int codigo = Integer.parseInt(
+                            json.substring(i + 1, i + 5),
+                            16
+                    );
+
+                    resultado.append((char) codigo);
+                    i += 4;
+
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+
+                break;
+
+            default:
+                return null;
         }
-        return total.length() == 0 ? null : total.toString();
     }
+
+    return null;
+}
+
+/**
+ * Encuentra el índice inmediatamente posterior al cierre
+ * de una cadena JSON.
+ */
+private static int finCadenaJson(
+        String json,
+        int inicio) {
+
+    if (json == null
+            || inicio < 0
+            || inicio >= json.length()
+            || json.charAt(inicio) != '"') {
+        return -1;
+    }
+
+    for (int i = inicio + 1; i < json.length(); i++) {
+
+        char c = json.charAt(i);
+
+        if (c == '\\') {
+            // Saltar el carácter escapado.
+            i++;
+        } else if (c == '"') {
+            return i + 1;
+        }
+    }
+
+    return -1;
+}
 }

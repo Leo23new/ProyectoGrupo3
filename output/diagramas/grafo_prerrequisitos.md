@@ -2,29 +2,29 @@
 
 ```mermaid
 flowchart LR
-    SIS101["SIS101"]
-    SIS102["SIS102"]
-    MAT101["MAT101"]
-    FIS101["FIS101"]
-    MAT102["MAT102"]
-    SIS201["SIS201"]
-    MAT201["MAT201"]
-    SIS202["SIS202"]
-    SIS203["SIS203"]
-    SIS301["SIS301"]
-    SIS302["SIS302"]
-    SIS303["SIS303"]
-    SIS101 --> SIS102
-    SIS102 --> SIS201
-    SIS102 --> SIS302
-    MAT101 --> MAT102
-    MAT101 --> MAT201
-    FIS101 --> SIS302
-    MAT102 --> SIS201
-    SIS201 --> SIS202
-    SIS201 --> SIS203
-    MAT201 --> SIS303
-    SIS202 --> SIS301
-    SIS203 --> SIS303
-    SIS301 --> SIS201
+    V0["SIS101"]
+    V1["SIS102"]
+    V2["MAT101"]
+    V3["FIS101"]
+    V4["MAT102"]
+    V5["SIS201"]
+    V6["MAT201"]
+    V7["SIS202"]
+    V8["SIS203"]
+    V9["SIS301"]
+    V10["SIS302"]
+    V11["SIS303"]
+    V0 --> V1
+    V1 --> V5
+    V1 --> V10
+    V2 --> V4
+    V2 --> V6
+    V3 --> V10
+    V4 --> V5
+    V5 --> V7
+    V5 --> V8
+    V6 --> V11
+    V7 --> V9
+    V8 --> V11
+    V9 --> V5
 ```

@@ -1,9 +1,6 @@
 # Flujograma: Grafo + DFS
 
-**Origen:** Generador local (sin IA): Error HTTP 429: {
-  "error": {
-    "code": 429,
-    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceede
+**Origen:** Generador local
 
 ```mermaid
 flowchart TD
@@ -22,7 +19,7 @@ flowchart TD
 ## Descripción estructurada enviada a la IA
 
 ```text
-Recorrido DFS real sobre el grafo de prerrequisitos usando una pila. Eventos registrados en orden (con el contenido de la pila tras cada paso):
+Recorrido DFS sobre el grafo de prerrequisitos usando una pila. Eventos registrados en orden:
 INICIO: DFS desde SIS101
 APILAR: SIS101 | pila=[cima: SIS101]
 VISITAR: SIS101 | pila=[cima: ]

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Grafo SmartETL-DS</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+            margin: 0;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e293b;
+        }
+
+        .contenedor {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,.1);
+            overflow: auto;
+        }
+
+        .mermaid {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Grafo de Prerrequisitos - SmartETL-DS</h1>
+
+    <div class="contenedor">
+        <pre class="mermaid">
+flowchart LR
+    V0["SIS101"]
+    V1["SIS102"]
+    V2["MAT101"]
+    V3["FIS101"]
+    V4["MAT102"]
+    V5["SIS201"]
+    V6["MAT201"]
+    V7["SIS202"]
+    V8["SIS203"]
+    V9["SIS301"]
+    V10["SIS302"]
+    V11["SIS303"]
+    V0 --> V1
+    V1 --> V5
+    V1 --> V10
+    V2 --> V4
+    V2 --> V6
+    V3 --> V10
+    V4 --> V5
+    V5 --> V7
+    V5 --> V8
+    V6 --> V11
+    V7 --> V9
+    V8 --> V11
+    V9 --> V5
+        </pre>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                curve: 'basis'
+            }
+        });
+    </script>
+
+</body>
+</html>

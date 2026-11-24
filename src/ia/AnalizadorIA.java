@@ -183,16 +183,26 @@ public class AnalizadorIA {
     // ------------------------------------------------------------ documentación
 
     public String documentacion(String resumenSistema) {
-        String r = ia.consultar("Documentación del sistema", GeneradorPrompt.SISTEMA_EXPLICACION,
-                GeneradorPrompt.documentacion(resumenSistema));
+        return documentacion(resumenSistema, true);
+    }
+
+    public String documentacion(String resumenSistema, boolean consultarIA) {
+        String r = consultarIA ? ia.consultar("Documentación del sistema", GeneradorPrompt.SISTEMA_EXPLICACION,
+                GeneradorPrompt.documentacion(resumenSistema)) : null;
         String origen = "IA (" + ia.getModelo() + ")";
-        if (r == null) {
-            origen = "Documentación local (sin IA): " + ia.getUltimoEstado();
-            r = "## Propósito\n\nSmartETL-DS + IA extrae datos académicos desde CSV, los valida, los carga limpios y los organiza "
-              + "con estructuras de datos propias para consultarlos.\n\n## Resumen de la ejecución\n\n```text\n"
+        if (r == null || r.isBlank()) {
+            origen = consultarIA ? "Documentación local (sin IA): " + ia.getUltimoEstado() : "Documentación local";
+            r = "## Propósito\n\nSmartETL-DS procesa y consulta datos académicos.\n\n"
+              + "## Flujo de datos\n\nLa extracción lee los CSV y encola los registros. "
+              + "La transformación valida y normaliza, y la carga escribe los datos limpios y los errores.\n\n"
+              + "## Estructuras utilizadas\n\nLa cola conserva el orden de llegada, la pila reúne los errores "
+              + "y las listas enlazadas guardan los registros válidos. El BST indexa estudiantes por clave. "
+              + "El grafo dirigido representa prerrequisitos y se recorre con BFS (cola) o DFS (pila).\n\n"
+              + "## Resultados de la ejecución\n\n```text\n"
               + resumenSistema + "\n```\n";
         }
-        return guardar("documentacion_ia.md", "Documentación del sistema", origen, r);
+        guardar("documentacion_ia.md", "Documentación del sistema", origen, r);
+        return "Origen: " + origen + "\n\n" + r;
     }
 
     // ----------------------------------------------------------------- interno
