@@ -115,6 +115,13 @@ internet para cargar la librería; sin internet se muestra el código). Con la I
 hace muchas llamadas seguidas y el nivel gratuito limita las peticiones por minuto; es mejor ejecutar las opciones 24 a 31
 una por una.
 
+## Ejecutar en GitHub Codespaces
+
+1. En GitHub, selecciona la rama `main` y abre **Code → Codespaces → Create codespace on main**.
+2. Codespaces prepara Java 21, compila el proyecto y arranca SmartETL en el puerto `8080`. La vista previa se abre en el editor. También puedes abrir **Ports → SmartETL web → Open in Browser**.
+
+La vista previa usa un puerto privado y está disponible mientras el Codespace esté activo. Si ya tenías uno abierto, actualiza la rama y ejecuta **Codespaces: Rebuild Container** desde la paleta de comandos. El registro de arranque queda en `out/web.log`.
+
 ## Despliegue web desde GitHub
 
 La interfaz HTML y la API se sirven desde el mismo proceso Java. GitHub Pages ofrece alojamiento estático, por lo que el ETL y las vistas interactivas necesitan un servicio que ejecute Java. El `Dockerfile` prepara la aplicación con Java 21, los CSV de ejemplo y la interfaz web.

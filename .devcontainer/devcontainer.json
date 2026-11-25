@@ -1,0 +1,13 @@
+{
+  "name": "SmartETL · Java 21",
+  "image": "mcr.microsoft.com/devcontainers/java:21-bookworm",
+  "remoteUser": "vscode",
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": {
+      "label": "SmartETL web",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "postStartCommand": ["bash", ".devcontainer/iniciar-web.sh"]
+}
