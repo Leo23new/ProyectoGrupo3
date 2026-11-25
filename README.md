@@ -115,6 +115,26 @@ internet para cargar la librería; sin internet se muestra el código). Con la I
 hace muchas llamadas seguidas y el nivel gratuito limita las peticiones por minuto; es mejor ejecutar las opciones 24 a 31
 una por una.
 
+## Despliegue web desde GitHub
+
+La interfaz HTML y la API se sirven desde el mismo proceso Java. GitHub Pages ofrece alojamiento estático, por lo que el ETL y las vistas interactivas necesitan un servicio que ejecute Java. El `Dockerfile` prepara la aplicación con Java 21, los CSV de ejemplo y la interfaz web.
+
+1. Sube a GitHub la rama que contiene `src/Servidor.java`, `web/index.html` y `Dockerfile`. En **Actions → Verificar SmartETL** se construye la imagen, se ejecutan las pruebas de Java y se verifica el arranque web.
+2. En [Render](https://dashboard.render.com/), elige **New → Web Service → Git Provider**, conecta GitHub y selecciona este repositorio.
+3. Selecciona la rama del paso 1, el lenguaje **Docker** y el plan **Free** para la demostración. Deja **Root Directory** vacío y usa `./Dockerfile`. En **Advanced**, puedes indicar `/` como ruta de verificación de salud.
+4. Pulsa **Deploy Web Service**. Cuando Render indique **Live**, abre la URL `https://…onrender.com` y añade ese enlace a este README para que se pueda abrir desde GitHub. Los nuevos cambios en la rama vinculada se pueden desplegar automáticamente.
+
+La demo usa los CSV sintéticos del repositorio y funciona con la guía local sin claves de IA. Para una demo pública, deja `GEMINI_API_KEY` y `ANTHROPIC_API_KEY` sin configurar. Si habilitas un proveedor de IA para una demo con acceso controlado, guarda la clave en las variables de entorno del servicio.
+
+Los visitantes comparten el estado del proceso. En el plan gratuito, Render suspende el servicio tras un periodo sin tráfico y puede perder los archivos generados en `output/` al reiniciar. Consulta la [guía de servicios web](https://render.com/docs/web-services) y los [límites del plan gratuito](https://render.com/docs/free).
+
+Para probar el contenedor en tu equipo con Docker instalado, ejecuta desde la raíz del repositorio y abre `http://localhost:8080`.
+
+```bash
+docker build -t smartetl .
+docker run --rm -p 127.0.0.1:8080:10000 smartetl
+```
+
 ## Dataset de prueba
 
 Contiene casos válidos e inválidos a propósito: identificadores mal formados, campos vacíos, formatos incorrectos,
