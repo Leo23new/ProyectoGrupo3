@@ -21,10 +21,10 @@ import java.util.StringJoiner;
 import java.util.concurrent.Executors;
 
 /**
- * Interfaz web local de SmartETL-DS + IA.
+ * Interfaz web de SmartETL-DS + IA.
  *
  * Utiliza el servidor HTTP incluido en Java.
- * Escucha exclusivamente en 127.0.0.1.
+ * En modo local escucha en 127.0.0.1 por defecto.
  */
 public class Servidor {
 
@@ -32,12 +32,12 @@ public class Servidor {
     // INICIO DEL SERVIDOR
     // ================================================================
 
-    public static void iniciar(int puerto) {
+    public static void iniciar(String host, int puerto) {
 
         try {
 
             HttpServer servidor = HttpServer.create(
-                    new InetSocketAddress("127.0.0.1", puerto),
+                    new InetSocketAddress(host, puerto),
                     0
             );
 
@@ -52,7 +52,7 @@ public class Servidor {
             servidor.start();
 
             System.out.println(
-                    "SmartETL-DS + IA disponible en http://127.0.0.1:" + puerto
+                    "SmartETL-DS + IA escuchando en " + host + ":" + servidor.getAddress().getPort()
             );
 
             System.out.println(
@@ -70,7 +70,7 @@ public class Servidor {
                     "Pruebe con otro puerto: java -cp out Main --web 8081"
             );
 
-            System.out.println("Detalle: " + e.getMessage());
+            throw new IllegalStateException("No se pudo iniciar el servidor web.", e);
         }
     }
 
@@ -244,10 +244,12 @@ public class Servidor {
                 return;
             }
 
-            String entrada = new String(
-                    ex.getRequestBody().readAllBytes(),
-                    StandardCharsets.UTF_8
-            );
+            byte[] cuerpo = ex.getRequestBody().readNBytes(32769);
+            if (cuerpo.length > 32768) {
+                responder(ex, 413, "text/plain; charset=utf-8", "Entrada demasiado larga.");
+                return;
+            }
+            String entrada = new String(cuerpo, StandardCharsets.UTF_8);
 
             String salida = correr(opcion, entrada);
 

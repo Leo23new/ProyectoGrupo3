@@ -70,8 +70,9 @@ public class Main {
 
     public static void main(String[] args) {
         if (args.length > 0 && args[0].equals("--web")) {
-            int puerto = args.length > 1 ? Integer.parseInt(args[1]) : 8080;
-            Servidor.iniciar(puerto);
+            String puerto = args.length > 1 ? args[1] : System.getenv().getOrDefault("PORT", "8080");
+            String host = System.getenv().getOrDefault("HOST", "127.0.0.1");
+            Servidor.iniciar(host, Integer.parseInt(puerto));
             return;
         }
         boolean demo = args.length > 0 && args[0].equals("--demo");

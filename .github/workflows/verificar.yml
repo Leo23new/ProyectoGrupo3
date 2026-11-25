@@ -1,0 +1,22 @@
+name: Verificar SmartETL
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+jobs:
+  probar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Construir la imagen
+        run: docker build -t smartetl .
+      - name: Ejecutar las pruebas de Java
+        run: docker run --rm smartetl java -cp out pruebas.Pruebas
+      - name: Comprobar que la web arranca
+        run: |
+          docker run --detach --name smartetl-web -e PORT=10001 -p 127.0.0.1:8080:10001 smartetl
+          trap 'docker logs smartetl-web; docker rm -f smartetl-web' EXIT
+          curl --fail --silent --show-error --retry 10 --retry-connrefused http://127.0.0.1:8080/ -o /dev/null
+          curl --fail --silent --show-error http://127.0.0.1:8080/api/estado | jq -e '.extraido == false'
